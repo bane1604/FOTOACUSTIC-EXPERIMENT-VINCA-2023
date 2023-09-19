@@ -22,22 +22,20 @@ namespace Vinca_Projekat.lib
 
         private static int duty;
         private static int power;
-
+        private static Form1 my_form = null;
 
 
         public static bool is_Connected() { return _connected; }
-        public static bool Connect(String port, int BaudRate )
+        public static bool Connect(String port, int BaudRate, Form1 mfrm )
         {
             try
             {
                 if (!is_Connected())
                 {
-                    if (printer == null)
-                    {
-                        printer = new SerialPort(port, BaudRate);
-                        printer.Encoding = Encoding.ASCII;
-                        printer.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
-                    }
+                    
+                    printer = new SerialPort(port, BaudRate);
+                    printer.Encoding = Encoding.ASCII;
+                    my_form = mfrm;
                     printer.Open();
                     _connected = true;
                     
@@ -53,15 +51,7 @@ namespace Vinca_Projekat.lib
             return false;
         }
 
-        private static void DataReceivedHandler(
-                    object sender,
-                    SerialDataReceivedEventArgs e)
-        {
-            SerialPort sp = (SerialPort)sender;
-            string indata = sp.ReadExisting();
-            Console.Write(indata);
-           
-        }
+       
         public static void Disconnect()
         {
             if (is_Connected())
@@ -103,33 +93,59 @@ namespace Vinca_Projekat.lib
 
         }
 
-        public static async void laser_start(int S, int frekv, int time, int dutyc = 10 )
+        private static bool flag = true;
+        private static void laser_thread2(object sender,
+                                  MicroLibrary.MicroTimerEventArgs timerEventArgs)
+        {
+
+
+            if (flag)
+            {
+                send_instruction("M107");
+            }
+            else
+            {
+                send_instruction("M106 S" + power.ToString());
+            }
+
+            flag = !flag;
+        }
+
+        public static bool laser_start(int S, int frekv, int time, int dutyc = 10 )
         {
             MicroLibrary.MicroTimer microTimer = new MicroLibrary.MicroTimer();
-            microTimer.MicroTimerElapsed +=
+            try
+            {
+                microTimer.MicroTimerElapsed +=
                 new MicroLibrary.MicroTimer.MicroTimerElapsedEventHandler(laser_thread);
+                power = S;
 
-            power = S;
-         
-            duty = dutyc;
+                duty = dutyc;
 
-            
-            microTimer.Interval = (1000000)/(frekv*20);
-            Console.WriteLine(microTimer.Interval.ToString());
 
-            send_instruction("M106 S" + power.ToString());
-            microTimer.Start();
+                microTimer.Interval = (1000000) / (frekv * 20);
+                Console.WriteLine(microTimer.Interval.ToString());
 
-            Thread.Sleep(time * 1000);
+                send_instruction("M106 S" + power.ToString());
+                microTimer.Start();
 
-            microTimer.StopAndWait();
-            send_instruction("M107");
+                Thread.Sleep(time * 1000);
 
+                microTimer.StopAndWait();
+                send_instruction("M107");
+                return true;
+            }
+            catch (Exception e)
+            {
+                microTimer.StopAndWait();
+                send_instruction("M107");
+                return false;
+            }
 
 
         }
 
-
+        
 
         private static void laser_testerica_thread(object sender,
                                   MicroLibrary.MicroTimerEventArgs timerEventArgs)
@@ -152,26 +168,36 @@ namespace Vinca_Projekat.lib
             }
         }
 
-        public static async void laser_testerica( int max_power, int frekv, int time)
+        public static bool laser_testerica( int max_power, int frekv, int time)
         {
 
             MicroLibrary.MicroTimer microTimer = new MicroLibrary.MicroTimer();
-            microTimer.MicroTimerElapsed +=
-                new MicroLibrary.MicroTimer.MicroTimerElapsedEventHandler(laser_testerica_thread);
+            try
+            {
+                microTimer.MicroTimerElapsed +=
+                    new MicroLibrary.MicroTimer.MicroTimerElapsedEventHandler(laser_testerica_thread);
 
-            power = max_power/5;
+                power = max_power / 5;
 
 
-            microTimer.Interval = (1000000) / (frekv * 10);
-            Console.WriteLine(microTimer.Interval.ToString());
+                microTimer.Interval = (1000000) / (frekv * 10);
+                Console.WriteLine(microTimer.Interval.ToString());
 
-           
-            microTimer.Start();
 
-            Thread.Sleep(time * 1000);
+                microTimer.Start();
 
-            microTimer.StopAndWait();
-            send_instruction("M107");
+                Thread.Sleep(time * 1000);
+
+                microTimer.StopAndWait();
+                send_instruction("M107");
+                return true;
+            }
+            catch
+            {
+                microTimer.StopAndWait();
+                send_instruction("M107");
+                return false;
+            }
         }
     }
 }
