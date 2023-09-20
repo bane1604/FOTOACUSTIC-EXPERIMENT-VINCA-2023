@@ -12,17 +12,10 @@ namespace Vinca_Projekat.lib
     {
         private static bool _connected = false;
         private static SerialPort lckin = null;
-<<<<<<< Updated upstream
-        private static Form1 my_form = null;
-
-        public static bool is_Connected() { return _connected; }
-        public static bool Connect(String port, int BaudRate, Form1 mfrm)
-=======
         private static MainForm my_form = null;
 
         public static bool is_Connected() { return _connected; }
         public static bool Connect(String port, int BaudRate, MainForm mfrm)
->>>>>>> Stashed changes
         {
             try
             {
