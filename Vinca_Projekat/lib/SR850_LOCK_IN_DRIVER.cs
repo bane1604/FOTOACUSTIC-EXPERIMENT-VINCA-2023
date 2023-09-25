@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace Vinca_Projekat.lib
 {
@@ -12,10 +13,12 @@ namespace Vinca_Projekat.lib
     {
         private static bool _connected = false;
         private static SerialPort lckin = null;
-        private static MainForm my_form = null;
+        public static LockInTest my_form = null;
+
+        
 
         public static bool is_Connected() { return _connected; }
-        public static bool Connect(String port, int BaudRate, MainForm mfrm)
+        public static bool Connect(String port, int BaudRate, LockInTest mfrm)
         {
             try
             {
@@ -25,8 +28,8 @@ namespace Vinca_Projekat.lib
                     lckin = new SerialPort(port, BaudRate);
                     lckin.Encoding = Encoding.ASCII;
                     my_form = mfrm;
-                    if (my_form != null)
-                        lckin.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
+                   
+                    lckin.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
                     lckin.Open();
                     _connected = true;
 
@@ -58,8 +61,14 @@ namespace Vinca_Projekat.lib
         {
             SerialPort sp = (SerialPort)sender;
             string indata = sp.ReadExisting();
-            my_form.AppendTextBox2(indata);
-
+            
+            try
+            {
+                my_form.Output(indata);
+            }
+            catch
+            {
+            }
         }
 
         public static void send_command(String command)

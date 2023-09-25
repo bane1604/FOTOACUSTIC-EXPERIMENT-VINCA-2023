@@ -138,6 +138,7 @@ namespace Vinca_Projekat
         private void exitbtn_Click(object sender, EventArgs e)
         {
             ForceStop();
+            inuse = false;
             this.Dispose();
         }
 

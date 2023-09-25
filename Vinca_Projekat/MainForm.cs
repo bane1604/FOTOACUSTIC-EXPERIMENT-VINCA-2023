@@ -20,19 +20,11 @@ namespace Vinca_Projekat
         String[] ports = SerialPort.GetPortNames();
         String[] baud_rates = { "115200" };
         LaserTestForm mylaserfrm = null;
+        LockInTest mylockintestfrm = null;
 
 
 
 
-        public void AppendTextBox2(string value)
-        {
-            if (InvokeRequired)
-            {
-                this.Invoke(new Action<string>(AppendTextBox2), new object[] { value });
-                return;
-            }
-            richTextBox2.Text += value;
-        }
 
 
         public MainForm()
@@ -59,11 +51,15 @@ namespace Vinca_Projekat
             {
                 Serial_Driver_Laser.Disconnect();
                 button1.Text = "Connect";
+                button2.Enabled = false;
             }
             else
             {
-                Serial_Driver_Laser.Connect(comboBox1.GetItemText(comboBox1.SelectedItem), 115200, this);
-                button1.Text = "Disconnect";
+                if (Serial_Driver_Laser.Connect(comboBox1.GetItemText(comboBox1.SelectedItem), 115200, this))
+                {
+                    button1.Text = "Disconnect";
+                    button2.Enabled = true;
+                }
             }
 
         }
@@ -120,35 +116,24 @@ namespace Vinca_Projekat
 
 
                 button8.Text = "Connect";
-                cmndlckin.Enabled = false;
-                sndcmndlckin.Enabled = false;
-                richTextBox2.Enabled = false;
-                button9.Enabled = false;
+                button3.Enabled = false;
+
             }
             else
             {
-                bool retval = SR850_LOCK_IN_DRIVER.Connect(comboBox3.GetItemText(comboBox3.SelectedItem), 9600, this);
+                bool retval = SR850_LOCK_IN_DRIVER.Connect(comboBox3.GetItemText(comboBox3.SelectedItem), 9600, null);
 
                 if (retval)
                 {
                     button8.Text = "Disconnect";
-                    cmndlckin.Enabled = true;
-                    sndcmndlckin.Enabled = true;
-                    richTextBox2.Enabled = true;
-                    button9.Enabled = true;
+                    button3.Enabled = true;
                 }
             }
         }
 
-        private void sndcmndlckin_Click(object sender, EventArgs e)
-        {
-            SR850_LOCK_IN_DRIVER.send_command(cmndlckin.Text);
-        }
+        
 
-        private void button9_Click(object sender, EventArgs e)
-        {
-            richTextBox2.Clear();
-        }
+        
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -162,6 +147,23 @@ namespace Vinca_Projekat
             else
             {
                 mylaserfrm.Focus();
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (LockInTest.inuse == false)
+            {
+                mylockintestfrm = new LockInTest();
+                mylockintestfrm.Show();
+                mylockintestfrm.Focus();
+                SR850_LOCK_IN_DRIVER.my_form = mylockintestfrm;
+                LockInTest.inuse = true;
+            }
+            else
+            {
+                mylockintestfrm.Focus();
+                SR850_LOCK_IN_DRIVER.my_form = null;
             }
         }
     }
