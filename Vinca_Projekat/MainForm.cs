@@ -21,8 +21,8 @@ namespace Vinca_Projekat
         String[] baud_rates = { "115200" };
         LaserTestForm mylaserfrm = null;
         LockInTest mylockintestfrm = null;
-
-
+        Label[] statuslabels = new Label[10];
+        Button[] raw_data_buttons = new Button[10];
 
 
 
@@ -131,9 +131,9 @@ namespace Vinca_Projekat
             }
         }
 
-        
 
-        
+
+
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -165,6 +165,51 @@ namespace Vinca_Projekat
                 mylockintestfrm.Focus();
                 SR850_LOCK_IN_DRIVER.my_form = null;
             }
+        }
+
+        private void cbbrojmerenja_SelectedValueChanged(object sender, EventArgs e)
+        {
+            int val = Convert.ToInt32(cbbrojmerenja.SelectedItem.ToString());
+
+            for (int i = 0; i < 10; i++)
+            {
+                if (statuslabels[i] != null)
+                {
+                    Controls.Remove(statuslabels[i]);
+                    statuslabels[i].Dispose();
+                    statuslabels[i] = null;
+                }
+
+                if (raw_data_buttons[i] != null)
+                {
+                    Controls.Remove(raw_data_buttons[i]);
+                    raw_data_buttons[i].Dispose();
+                    raw_data_buttons[i] = null;
+                }
+            }
+
+            datagrid.Rows.Clear();
+
+            for (int i = 0; i < val; i++)
+            {
+                datagrid.Rows.Add();
+                statuslabels[i] = new Label();
+                statuslabels[i].Location = new Point(322, 265 + (i + 1) * 25);
+                statuslabels[i].Text = "Status: Waiting";
+                statuslabels[i].BackColor = Color.Yellow;
+                statuslabels[i].Visible = true;
+                Controls.Add(statuslabels[i]);
+
+                raw_data_buttons[i] = new Button();
+                raw_data_buttons[i].Location = new Point(425, 265 + (i + 1) * 25);
+                raw_data_buttons[i].Text = "RawData";
+                raw_data_buttons[i].Visible = true;
+                raw_data_buttons[i].UseVisualStyleBackColor = true;
+                raw_data_buttons[i].Enabled = false;
+                Controls.Add(raw_data_buttons[i]);
+            }
+
+           
         }
     }
 }
