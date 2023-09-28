@@ -14,7 +14,7 @@ namespace Vinca_Projekat.lib
         private static bool _connected = false;
         private static SerialPort lckin = null;
         public static LockInTest my_form = null;
-
+        public static int outputdata = -1;
         
 
         public static bool is_Connected() { return _connected; }
@@ -61,7 +61,9 @@ namespace Vinca_Projekat.lib
         {
             SerialPort sp = (SerialPort)sender;
             string indata = sp.ReadExisting();
-            
+
+
+            EXPERIMENT_LIB.append_data(outputdata, indata);
             try
             {
                 my_form.Output(indata);

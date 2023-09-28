@@ -23,7 +23,7 @@ namespace Vinca_Projekat
         LockInTest mylockintestfrm = null;
         Label[] statuslabels = new Label[10];
         Button[] raw_data_buttons = new Button[10];
-
+        Thread expt = null;
 
 
 
@@ -150,6 +150,12 @@ namespace Vinca_Projekat
             }
         }
 
+
+        public int get_vreme_merenja()
+        {
+            return Convert.ToInt32(vremepucanjatb.Text);
+        }
+
         private void button3_Click(object sender, EventArgs e)
         {
             if (LockInTest.inuse == false)
@@ -190,18 +196,22 @@ namespace Vinca_Projekat
 
             datagrid.Rows.Clear();
 
+            int x = datagrid.Location.X;
+            int y = datagrid.Location.Y;
+
+
+
             for (int i = 0; i < val; i++)
             {
                 datagrid.Rows.Add();
                 statuslabels[i] = new Label();
-                statuslabels[i].Location = new Point(322, 265 + (i + 1) * 25);
+                statuslabels[i].Location = new Point(x + 350, y + (i + 1) * 25);
                 statuslabels[i].Text = "Status: Waiting";
-                statuslabels[i].BackColor = Color.Yellow;
                 statuslabels[i].Visible = true;
                 Controls.Add(statuslabels[i]);
 
                 raw_data_buttons[i] = new Button();
-                raw_data_buttons[i].Location = new Point(425, 265 + (i + 1) * 25);
+                raw_data_buttons[i].Location = new Point(x + 450, y + (i + 1) * 25);
                 raw_data_buttons[i].Text = "RawData";
                 raw_data_buttons[i].Visible = true;
                 raw_data_buttons[i].UseVisualStyleBackColor = true;
@@ -209,7 +219,60 @@ namespace Vinca_Projekat
                 Controls.Add(raw_data_buttons[i]);
             }
 
-           
+
+        }
+
+        public void update_status(String val, int i)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<string, int>(update_status), new object[] { val, i });
+                return;
+            }
+
+            statuslabels[i].Text = val;
+
+        }
+
+
+        private static int par1;
+
+        private static int par2;
+        private static int par3;
+        private static int par4;
+
+        private void start_exp()
+        {
+            EXPERIMENT_LIB.begin_experiment(
+                par1, par2, par3, par4,
+                this
+                );
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
+
+            par1 = Convert.ToInt32(cbbrojmerenja.SelectedItem.ToString());
+            par2 = Convert.ToInt32(cbsamplerate.Text);
+            par3 = Convert.ToInt32(tbvremeakvizicije.Text);
+            par4 = Convert.ToInt32(vremepucanjatb.Text);
+
+            for (int i = 0; i < par1; i++)
+            {
+                EXPERIMENT_LIB.snaga[i] = (int)Math.Ceiling((Convert.ToDouble(datagrid.Rows[i].Cells[0].Value.ToString()) * 255.0) / 100.0);
+
+                EXPERIMENT_LIB.frekv[i] = Convert.ToInt32(datagrid.Rows[i].Cells[1].Value.ToString());
+
+                EXPERIMENT_LIB.duty[i] = Convert.ToInt32(datagrid.Rows[i].Cells[2].Value.ToString()) / 5;
+            }
+            expt = new Thread(start_exp);
+            expt.Start();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            expt.Interrupt();
         }
     }
 }
