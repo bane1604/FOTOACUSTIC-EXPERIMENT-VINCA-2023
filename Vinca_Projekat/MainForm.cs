@@ -156,6 +156,17 @@ namespace Vinca_Projekat
             return Convert.ToInt32(vremepucanjatb.Text);
         }
 
+
+        private void data_callbackR(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
+            int i = Convert.ToInt32(button.Name.Substring(1));
+
+            double[] a = EXPERIMENT_LIB.get_R_data(i);
+            
+
+        }
+
         private void button3_Click(object sender, EventArgs e)
         {
             if (LockInTest.inuse == false)
@@ -205,19 +216,24 @@ namespace Vinca_Projekat
             {
                 datagrid.Rows.Add();
                 statuslabels[i] = new Label();
-                statuslabels[i].Location = new Point(x + 350, y + (i + 1) * 25);
+                statuslabels[i].Location = new Point(x + 400, y + (i + 1) * 25);
                 statuslabels[i].Text = "Status: Waiting";
                 statuslabels[i].Visible = true;
                 Controls.Add(statuslabels[i]);
 
                 raw_data_buttons[i] = new Button();
-                raw_data_buttons[i].Location = new Point(x + 450, y + (i + 1) * 25);
+                raw_data_buttons[i].Location = new Point(x + 500, y + (i + 1) * 25);
                 raw_data_buttons[i].Text = "RawData";
+                raw_data_buttons[i].Name = "R" + i.ToString();
+                raw_data_buttons[i].Click += data_callbackR;
                 raw_data_buttons[i].Visible = true;
                 raw_data_buttons[i].UseVisualStyleBackColor = true;
-                raw_data_buttons[i].Enabled = false;
+
+
+                raw_data_buttons[i].Enabled = true;
                 Controls.Add(raw_data_buttons[i]);
             }
+
 
 
         }
@@ -274,5 +290,6 @@ namespace Vinca_Projekat
         {
             expt.Interrupt();
         }
+
     }
 }

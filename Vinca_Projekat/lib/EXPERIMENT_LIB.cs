@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Vinca_Projekat.lib
 {
-    internal class EXPERIMENT_LIB
+    internal static class EXPERIMENT_LIB
     {
         private static bool flag = false;
         private static Mutex mut = new Mutex(false);
@@ -17,15 +17,22 @@ namespace Vinca_Projekat.lib
         private static StringBuilder[] dataT = new StringBuilder[12];
         private static Thread[] threads = new Thread[12];
         private static int broj_tacaka;
-        private static int vreme_merenja;
         private static int vreme_isijavanja;
         public static int[] snaga = new Int32[12];
         public static int[] frekv =new Int32[12];
         public static int[] duty =new Int32[12];
 
+        private static List<double[]>[] Rval =  new List<double[]>[12];
+        private static List<double[]>[] Tval = new List<double[]>[12];
+
 
 
         private static int curi = 0;
+
+        public static double[] get_R_data( int i )
+        {
+            return (double[])Rval.GetValue(i);
+        }
 
 
         public static void append_data( int i, String x)
@@ -42,8 +49,6 @@ namespace Vinca_Projekat.lib
         private static void help_start()
         {
             Serial_Driver_Laser.laser_start(snaga[curi], frekv[curi], vreme_isijavanja, duty[curi]);
-
-            
         }
 
         public static void begin_experiment(int n, int sample_rate, int vreme_merenja, int vreme_pucanja, MainForm mfrm)

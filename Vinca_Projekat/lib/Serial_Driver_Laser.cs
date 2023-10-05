@@ -12,12 +12,11 @@ using System.Windows.Forms;
 
 namespace Vinca_Projekat.lib
 {
-    internal class Serial_Driver_Laser
+    internal static class Serial_Driver_Laser
     {
         private static bool _connected = false;
         private static SerialPort printer = null;
         private static int lineno = 1;
-        private static int okcnt = 0;
 
 
         private static int duty;
@@ -84,6 +83,7 @@ namespace Vinca_Projekat.lib
             if( timerEventArgs.TimerCount % 20 == duty)
             {
                 send_instruction("M107");
+                return;
             }
             if( timerEventArgs.TimerCount % 20 == 0)
             {

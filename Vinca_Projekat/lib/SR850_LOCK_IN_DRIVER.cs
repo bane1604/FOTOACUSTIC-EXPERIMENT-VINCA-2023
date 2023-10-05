@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace Vinca_Projekat.lib
 {
-    internal class SR850_LOCK_IN_DRIVER
+    internal static class SR850_LOCK_IN_DRIVER
     {
         private static bool _connected = false;
         private static SerialPort lckin = null;
