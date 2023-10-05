@@ -70,7 +70,7 @@
             linkLabel1.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             linkLabel1.LinkColor = System.Drawing.Color.Black;
-            linkLabel1.Location = new System.Drawing.Point(580, 9);
+            linkLabel1.Location = new System.Drawing.Point(638, 9);
             linkLabel1.Name = "linkLabel1";
             linkLabel1.Size = new System.Drawing.Size(48, 25);
             linkLabel1.TabIndex = 0;
@@ -88,7 +88,7 @@
             // comboBox1
             // 
             comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new System.Drawing.Point(316, 52);
+            comboBox1.Location = new System.Drawing.Point(399, 54);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new System.Drawing.Size(152, 24);
             comboBox1.TabIndex = 3;
@@ -96,14 +96,14 @@
             // comboBox2
             // 
             comboBox2.FormattingEnabled = true;
-            comboBox2.Location = new System.Drawing.Point(316, 82);
+            comboBox2.Location = new System.Drawing.Point(399, 84);
             comboBox2.Name = "comboBox2";
             comboBox2.Size = new System.Drawing.Size(152, 24);
             comboBox2.TabIndex = 4;
             // 
             // button1
             // 
-            button1.Location = new System.Drawing.Point(472, 81);
+            button1.Location = new System.Drawing.Point(555, 83);
             button1.Name = "button1";
             button1.Size = new System.Drawing.Size(111, 25);
             button1.TabIndex = 5;
@@ -113,7 +113,7 @@
             // 
             // button5
             // 
-            button5.Location = new System.Drawing.Point(472, 50);
+            button5.Location = new System.Drawing.Point(555, 52);
             button5.Name = "button5";
             button5.Size = new System.Drawing.Size(111, 25);
             button5.TabIndex = 17;
@@ -125,7 +125,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point);
-            label5.Location = new System.Drawing.Point(413, 9);
+            label5.Location = new System.Drawing.Point(496, 11);
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(84, 32);
             label5.TabIndex = 19;
@@ -182,7 +182,7 @@
             // button2
             // 
             button2.Enabled = false;
-            button2.Location = new System.Drawing.Point(472, 113);
+            button2.Location = new System.Drawing.Point(555, 115);
             button2.Name = "button2";
             button2.Size = new System.Drawing.Size(111, 25);
             button2.TabIndex = 30;
@@ -193,7 +193,7 @@
             // button3
             // 
             button3.Enabled = false;
-            button3.Location = new System.Drawing.Point(472, 144);
+            button3.Location = new System.Drawing.Point(555, 146);
             button3.Name = "button3";
             button3.Size = new System.Drawing.Size(111, 25);
             button3.TabIndex = 31;
@@ -337,7 +337,7 @@
             BackColor = System.Drawing.SystemColors.ActiveCaption;
             BackgroundImage = (System.Drawing.Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            ClientSize = new System.Drawing.Size(657, 603);
+            ClientSize = new System.Drawing.Size(726, 603);
             Controls.Add(button6);
             Controls.Add(button4);
             Controls.Add(vremepucanjatb);

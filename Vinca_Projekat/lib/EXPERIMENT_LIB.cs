@@ -33,7 +33,10 @@ namespace Vinca_Projekat.lib
         {
             return (double[])Rval.GetValue(i);
         }
-
+        public static double[] get_T_data(int i)
+        {
+            return (double[])Tval.GetValue(i);
+        }
 
         public static void append_data( int i, String x)
         {
@@ -99,6 +102,38 @@ namespace Vinca_Projekat.lib
                     Thread.Sleep(500);
                     t.Join();
                     mfrm.update_status("Status: Finished", i);
+                }
+
+                for( int i = 0; i < n; i++)
+                {
+                    double[] r = new double[broj_tacaka];
+                    double[] u = new double[broj_tacaka];
+
+                    String[] rs = dataR.ToString().Split(",");
+                    String[] us = dataT.ToString().Split(",");
+
+                    foreach( String  s in rs )
+                    {
+                        try
+                        {
+                            r[i] = Double.Parse(s);
+                        }
+                        catch( Exception e ) { }
+                    }
+
+                    foreach ( String s in us )
+                    {
+                        try
+                        {
+                            u[i] = Double.Parse(s);
+                        }
+                        catch (Exception e) { }
+                    }
+
+                    Rval.SetValue(r, i);
+                    Tval.SetValue(u, i);
+                    mfrm.EnableRbutton(i);
+                    mfrm.EnableTbutton(i);
                 }
             }
             catch (Exception e)

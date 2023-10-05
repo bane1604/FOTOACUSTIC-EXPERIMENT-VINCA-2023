@@ -22,7 +22,8 @@ namespace Vinca_Projekat
         LaserTestForm mylaserfrm = null;
         LockInTest mylockintestfrm = null;
         Label[] statuslabels = new Label[10];
-        Button[] raw_data_buttons = new Button[10];
+        Button[] rbuttons = new Button[10];
+        Button[] tbuttons = new Button[10];
         Thread expt = null;
 
 
@@ -163,8 +164,18 @@ namespace Vinca_Projekat
             int i = Convert.ToInt32(button.Name.Substring(1));
 
             double[] a = EXPERIMENT_LIB.get_R_data(i);
-            
 
+            new ViewData(a, par2);
+        }
+
+        private void data_callbackT(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
+            int i = Convert.ToInt32(button.Name.Substring(1));
+
+            double[] a = EXPERIMENT_LIB.get_T_data(i);
+
+            new ViewData(a, par2);
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -197,11 +208,18 @@ namespace Vinca_Projekat
                     statuslabels[i] = null;
                 }
 
-                if (raw_data_buttons[i] != null)
+                if (rbuttons[i] != null)
                 {
-                    Controls.Remove(raw_data_buttons[i]);
-                    raw_data_buttons[i].Dispose();
-                    raw_data_buttons[i] = null;
+                    Controls.Remove(rbuttons[i]);
+                    rbuttons[i].Dispose();
+                    rbuttons[i] = null;
+                }
+
+                if (tbuttons[i] != null)
+                {
+                    Controls.Remove(tbuttons[i]);
+                    tbuttons[i].Dispose();
+                    tbuttons[i] = null;
                 }
             }
 
@@ -221,20 +239,48 @@ namespace Vinca_Projekat
                 statuslabels[i].Visible = true;
                 Controls.Add(statuslabels[i]);
 
-                raw_data_buttons[i] = new Button();
-                raw_data_buttons[i].Location = new Point(x + 500, y + (i + 1) * 25);
-                raw_data_buttons[i].Text = "RawData";
-                raw_data_buttons[i].Name = "R" + i.ToString();
-                raw_data_buttons[i].Click += data_callbackR;
-                raw_data_buttons[i].Visible = true;
-                raw_data_buttons[i].UseVisualStyleBackColor = true;
+                rbuttons[i] = new Button();
+                rbuttons[i].Location = new Point(x + 500, y + (i + 1) * 25);
+                rbuttons[i].Text = "View R";
+                rbuttons[i].Name = "R" + i.ToString();
+                rbuttons[i].Click += data_callbackR;
+                rbuttons[i].Visible = true;
+                rbuttons[i].UseVisualStyleBackColor = true;
+                rbuttons[i].Enabled = false;
+                Controls.Add(rbuttons[i]);
 
-
-                raw_data_buttons[i].Enabled = true;
-                Controls.Add(raw_data_buttons[i]);
+                tbuttons[i] = new Button();
+                tbuttons[i].Location = new Point(x + 600, y + (i + 1) * 25);
+                tbuttons[i].Text = "View T";
+                tbuttons[i].Name = "T" + i.ToString();
+                tbuttons[i].Click += data_callbackT;
+                tbuttons[i].Visible = true;
+                tbuttons[i].UseVisualStyleBackColor = true;
+                tbuttons[i].Enabled = false;
+                Controls.Add(tbuttons[i]);
             }
 
 
+
+        }
+
+        public void EnableRbutton(int i)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<int>(EnableRbutton), new object[] { i });
+                return;
+            }
+            rbuttons[i].Enabled = true;
+        }
+
+        public void EnableTbutton(int i)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<int>(EnableTbutton), new object[] { i });
+                return;
+            }
 
         }
 
