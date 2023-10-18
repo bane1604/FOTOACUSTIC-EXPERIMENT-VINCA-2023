@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
@@ -13,17 +14,17 @@ namespace Vinca_Projekat.lib
     {
         private static bool flag = false;
         private static Mutex mut = new Mutex(false);
-        private static StringBuilder[] dataR = new StringBuilder[12];
-        private static StringBuilder[] dataT = new StringBuilder[12];
-        private static Thread[] threads = new Thread[12];
+        private static StringBuilder[] dataR = new StringBuilder[102];
+        private static StringBuilder[] dataT = new StringBuilder[102];
+  
         private static int broj_tacaka;
         private static int vreme_isijavanja;
-        public static int[] snaga = new Int32[12];
-        public static int[] frekv =new Int32[12];
-        public static int[] duty =new Int32[12];
+        public static int[] snaga = new Int32[102];
+        public static int[] frekv =new Int32[102];
+        public static int[] duty =new Int32[102];
 
-        private static List<double[]>[] Rval =  new List<double[]>[12];
-        private static List<double[]>[] Tval = new List<double[]>[12];
+        private static List<double>[] Rval =  new List<double>[102];
+        private static List<double>[] Tval = new List<double>[102];
 
 
 
@@ -31,11 +32,15 @@ namespace Vinca_Projekat.lib
 
         public static double[] get_R_data( int i )
         {
-            return (double[])Rval.GetValue(i);
+            List<double> l = Rval[i];
+
+            return l.ToArray();
         }
         public static double[] get_T_data(int i)
         {
-            return (double[])Tval.GetValue(i);
+            List<double> l = Tval[i];
+
+            return l.ToArray();
         }
 
         public static void append_data( int i, String x)
@@ -106,32 +111,35 @@ namespace Vinca_Projekat.lib
 
                 for( int i = 0; i < n; i++)
                 {
-                    double[] r = new double[broj_tacaka];
-                    double[] u = new double[broj_tacaka];
+                    List<double> r = new List<double>();
+                    List<double> u = new List<double>();
 
-                    String[] rs = dataR.ToString().Split(",");
-                    String[] us = dataT.ToString().Split(",");
+                    String[] rs = dataR[i].ToString().Split(",");
+                    String[] us = dataT[i].ToString().Split(",");
 
+                    
+                    
                     foreach( String  s in rs )
                     {
                         try
                         {
-                            r[i] = Double.Parse(s);
+                            r.Add(Convert.ToDouble(s));
                         }
-                        catch( Exception e ) { }
+                        catch( Exception e ) {
+                        }
                     }
 
                     foreach ( String s in us )
                     {
                         try
                         {
-                            u[i] = Double.Parse(s);
+                            u.Add(Convert.ToDouble(s));
                         }
                         catch (Exception e) { }
                     }
 
-                    Rval.SetValue(r, i);
-                    Tval.SetValue(u, i);
+                    Rval[i] = r;
+                    Tval[i] = u;
                     mfrm.EnableRbutton(i);
                     mfrm.EnableTbutton(i);
                 }
@@ -143,6 +151,7 @@ namespace Vinca_Projekat.lib
                 t.Join();
 
             }
+            
             
         }
     }

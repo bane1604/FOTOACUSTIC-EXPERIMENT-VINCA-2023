@@ -158,24 +158,39 @@ namespace Vinca_Projekat
         }
 
 
-        private void data_callbackR(object sender, EventArgs e)
+        private void data_callbackT(object sender, EventArgs e)
         {
             Button button = (Button)sender;
             int i = Convert.ToInt32(button.Name.Substring(1));
 
             double[] a = EXPERIMENT_LIB.get_R_data(i);
 
-            new ViewData(a, par2);
+            double[] test = new double[a.Length-9];
+
+            for( int ix = 5;  ix <a.Length-4; ix++ )
+            {
+                test[ix - 5] = a[ix];
+            }
+
+            new ViewData(test, par2).Show();
         }
 
-        private void data_callbackT(object sender, EventArgs e)
+        private void data_callbackR(object sender, EventArgs e)
         {
             Button button = (Button)sender;
             int i = Convert.ToInt32(button.Name.Substring(1));
 
             double[] a = EXPERIMENT_LIB.get_T_data(i);
 
-            new ViewData(a, par2);
+            double[] test = new double[a.Length - 9];
+
+            for (int ix = 5; ix < a.Length - 4; ix++)
+            {
+                test[ix - 5] = a[ix];
+            }
+
+
+            new ViewData(test, par2).Show();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -281,7 +296,7 @@ namespace Vinca_Projekat
                 this.Invoke(new Action<int>(EnableTbutton), new object[] { i });
                 return;
             }
-
+            tbuttons[i].Enabled = true;
         }
 
         public void update_status(String val, int i)
