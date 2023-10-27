@@ -84,29 +84,33 @@ namespace Vinca_Projekat.lib
                     curi = i;
 
 
-                    mfrm.update_status("Status: Running", i );
+                    //mfrm.update_status("Status: Running", i );
                     t = new Thread(help_start);
                     t.Start();
                     
 
                     Thread.Sleep(5000);
-                    mfrm.update_status("Status: Recording", i);
+                    //mfrm.update_status("Status: Recording", i);
                     SR850_LOCK_IN_DRIVER.send_command("STRT");
                     Thread.Sleep(vreme_merenja * 1000);
 
-                    mfrm.update_status("Status: Saving", i);
+                    //mfrm.update_status("Status: Saving", i);
                     SR850_LOCK_IN_DRIVER.outputdata = i;
                     flag = false;
                     SR850_LOCK_IN_DRIVER.send_command("TRCA ? 2,0," + broj_tacaka.ToString());
-                    Thread.Sleep(2000);
+                    Thread.Sleep(10000);
+                    
                     flag = true;
                     SR850_LOCK_IN_DRIVER.send_command("TRCA ? 3,0," + broj_tacaka.ToString());
-                    Thread.Sleep(2000);
+                    Thread.Sleep(10000);
                     SR850_LOCK_IN_DRIVER.outputdata = -1;
+                    
+
                     SR850_LOCK_IN_DRIVER.send_command("REST");
-                    Thread.Sleep(500);
+                    
+                    Thread.Sleep(1000);
                     t.Join();
-                    mfrm.update_status("Status: Finished", i);
+                    //mfrm.update_status("Status: Finished", i);
                 }
 
                 for( int i = 0; i < n; i++)
@@ -140,9 +144,10 @@ namespace Vinca_Projekat.lib
 
                     Rval[i] = r;
                     Tval[i] = u;
-                    mfrm.EnableRbutton(i);
-                    mfrm.EnableTbutton(i);
+                    //mfrm.EnableRbutton(i);
+                    //mfrm.EnableTbutton(i);
                 }
+                MessageBox.Show("Merenje zavrseno!");
             }
             catch (Exception e)
             {

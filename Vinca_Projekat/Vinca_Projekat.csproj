@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="IronXL.Excel" Version="2023.10.8" />
     <PackageReference Include="ScottPlot" Version="4.1.68" />
     <PackageReference Include="ScottPlot.WinForms" Version="4.1.68" />
     <PackageReference Include="System.IO.Ports" Version="7.0.0" />

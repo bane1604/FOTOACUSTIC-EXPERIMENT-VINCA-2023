@@ -11,7 +11,7 @@ using System.IO.Ports;
 using System.Threading;
 using Vinca_Projekat.lib;
 using System.Runtime.InteropServices;
-
+using IronXL;
 
 namespace Vinca_Projekat
 {
@@ -165,9 +165,9 @@ namespace Vinca_Projekat
 
             double[] a = EXPERIMENT_LIB.get_R_data(i);
 
-            double[] test = new double[a.Length-9];
+            double[] test = new double[a.Length - 9];
 
-            for( int ix = 5;  ix <a.Length-4; ix++ )
+            for (int ix = 5; ix < a.Length - 4; ix++)
             {
                 test[ix - 5] = a[ix];
             }
@@ -248,6 +248,7 @@ namespace Vinca_Projekat
             for (int i = 0; i < val; i++)
             {
                 datagrid.Rows.Add();
+                /*
                 statuslabels[i] = new Label();
                 statuslabels[i].Location = new Point(x + 400, y + (i + 1) * 25);
                 statuslabels[i].Text = "Status: Waiting";
@@ -273,6 +274,7 @@ namespace Vinca_Projekat
                 tbuttons[i].UseVisualStyleBackColor = true;
                 tbuttons[i].Enabled = false;
                 Controls.Add(tbuttons[i]);
+                */
             }
 
 
@@ -352,5 +354,97 @@ namespace Vinca_Projekat
             expt.Interrupt();
         }
 
+        private void importbtn_Click(object sender, EventArgs e)
+        {
+            IronXL.License.LicenseKey = "IRONSUITE.BANE160404.GMAIL.COM.20890-C21CB11042-D7VVKVY-SB2TCSAEJSXZ-IDRVUE6LLECH-WR5XC5EIXO3H-2MDYLAL5GTLM-BQFQIH32DRFT-OYWXDRGY3VSN-XVM6C4-TSBF6GOMXIWLEA-DEPLOYMENT.TRIAL-UHLE54.TRIAL.EXPIRES.26.NOV.2023";
+
+            WorkBook wb = WorkBook.Load(pathtofile.Text);
+            WorkSheet ws = wb.GetWorkSheet(cbsheets.SelectedItem.ToString());
+
+            int n = Convert.ToInt32(cbbrojmerenja.SelectedItem.ToString()) + 1;
+
+
+            if (ws == null) { wb.Close(); return; }
+            var range = ws["A2:C" + n.ToString()];
+
+            int i = 0;
+            int j = 0;
+            foreach (var cell in range)
+            {
+                datagrid.Rows[i].Cells[j].Value = cell.ToString();
+                j++;
+                if (j == 3)
+                {
+                    j = 0;
+                    i++;
+                }
+
+            }
+            wb.Close();
+
+        }
+
+        private void selectfile_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
+            {
+                openFileDialog1.ShowDialog(this);
+                pathtofile.Text = openFileDialog1.FileName;
+                IronXL.License.LicenseKey = "IRONSUITE.BANE160404.GMAIL.COM.20890-C21CB11042-D7VVKVY-SB2TCSAEJSXZ-IDRVUE6LLECH-WR5XC5EIXO3H-2MDYLAL5GTLM-BQFQIH32DRFT-OYWXDRGY3VSN-XVM6C4-TSBF6GOMXIWLEA-DEPLOYMENT.TRIAL-UHLE54.TRIAL.EXPIRES.26.NOV.2023";
+
+                WorkBook wb = WorkBook.Load(pathtofile.Text);
+                cbsheets.Items.Clear();
+                foreach (var ws in wb.WorkSheets)
+                {
+
+                    cbsheets.Items.Add(ws.Name);
+
+                }
+                wb.Close();
+            }
+        }
+
+        private void fillfile_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int n = Convert.ToInt32(cbbrojmerenja.SelectedItem.ToString());
+                WorkBook wb = WorkBook.Load(pathtofile.Text);
+                WorkSheet ws = wb.GetWorkSheet(cbsheets.SelectedItem.ToString());
+
+
+                for (int i = 0; i < n; i++)
+                {
+                    int col = 3;
+                    double[] dataR = EXPERIMENT_LIB.get_T_data(i);
+                    //MessageBox.Show(dataR.Length.ToString());
+                    for (int ix = 5; ix < dataR.Length - 4; ix++)
+                    {
+                        ws.SetCellValue(0, col, "R" + ((ix) - 5).ToString());
+
+                        ws.SetCellValue(i + 1, col, dataR[ix]);
+                        col++;
+
+                    }
+
+                    double[] dataT = EXPERIMENT_LIB.get_R_data(i);
+                    //MessageBox.Show(dataT.Length.ToString());
+                    for (int ix = 5; ix < dataT.Length - 4; ix++)
+                    {
+                        ws.SetCellValue(0, col, "T" + ((ix) - 5).ToString());
+
+                        ws.SetCellValue(i + 1, col, dataT[ix]);
+                        col++;
+                    }
+
+                }
+                wb.Save();
+
+                wb.Close();
+                MessageBox.Show("Podaci su upisani!");
+            }
+            catch (Exception es)
+            { MessageBox.Show(es.ToString()); }
+        }
     }
 }
