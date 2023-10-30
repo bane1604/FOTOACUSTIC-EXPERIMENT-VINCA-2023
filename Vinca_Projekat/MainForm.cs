@@ -12,6 +12,7 @@ using System.Threading;
 using Vinca_Projekat.lib;
 using System.Runtime.InteropServices;
 using IronXL;
+using System.IO;
 
 namespace Vinca_Projekat
 {
@@ -122,7 +123,7 @@ namespace Vinca_Projekat
             }
             else
             {
-                bool retval = SR850_LOCK_IN_DRIVER.Connect(comboBox3.GetItemText(comboBox3.SelectedItem), 9600, null);
+                bool retval = SR850_LOCK_IN_DRIVER.Connect(comboBox3.GetItemText(comboBox3.SelectedItem), 9600);
 
                 if (retval)
                 {
@@ -200,7 +201,7 @@ namespace Vinca_Projekat
                 mylockintestfrm = new LockInTest();
                 mylockintestfrm.Show();
                 mylockintestfrm.Focus();
-                SR850_LOCK_IN_DRIVER.my_form = mylockintestfrm;
+                SR850_LOCK_IN_DRIVER.setForm(mylockintestfrm);
                 LockInTest.inuse = true;
             }
             else
@@ -331,19 +332,40 @@ namespace Vinca_Projekat
         private void button4_Click(object sender, EventArgs e)
         {
 
-
-            par1 = Convert.ToInt32(cbbrojmerenja.SelectedItem.ToString());
-            par2 = Convert.ToInt32(cbsamplerate.Text);
-            par3 = Convert.ToInt32(tbvremeakvizicije.Text);
-            par4 = Convert.ToInt32(vremepucanjatb.Text);
-
-            for (int i = 0; i < par1; i++)
+            if( !SR850_LOCK_IN_DRIVER.is_Connected())
             {
-                EXPERIMENT_LIB.snaga[i] = (int)Math.Ceiling((Convert.ToDouble(datagrid.Rows[i].Cells[0].Value.ToString()) * 255.0) / 100.0);
+                PrintInfo.ShowMessage("Lock in uredjaj nije povezan.");
+                return;
+            }
+            if (!Serial_Driver_Laser.is_Connected())
+            {
+                PrintInfo.ShowMessage("Laser nije povezan.");
+                return;
+            }
+            try
+            {
 
-                EXPERIMENT_LIB.frekv[i] = Convert.ToInt32(datagrid.Rows[i].Cells[1].Value.ToString());
+                par1 = Convert.ToInt32(cbbrojmerenja.SelectedItem.ToString());
+                par2 = Convert.ToInt32(cbsamplerate.Text);
+                par3 = Convert.ToInt32(tbvremeakvizicije.Text);
+                par4 = Convert.ToInt32(vremepucanjatb.Text);
 
-                EXPERIMENT_LIB.duty[i] = Convert.ToInt32(datagrid.Rows[i].Cells[2].Value.ToString()) / 5;
+
+
+                for (int i = 0; i < par1; i++)
+                {
+
+                    EXPERIMENT_LIB.snaga[i] = (int)Math.Ceiling((Convert.ToDouble(datagrid.Rows[i].Cells[0].Value.ToString()) * 255.0) / 100.0);
+
+                    EXPERIMENT_LIB.frekv[i] = Convert.ToInt32(datagrid.Rows[i].Cells[1].Value.ToString());
+
+                    EXPERIMENT_LIB.duty[i] = Convert.ToInt32(datagrid.Rows[i].Cells[2].Value.ToString()) / 5;
+                }
+            }
+            catch
+            {
+                PrintInfo.ShowMessage("Nisu valjani parametri eksperimenta.");
+                return;
             }
             expt = new Thread(start_exp);
             expt.Start();
@@ -386,21 +408,32 @@ namespace Vinca_Projekat
 
         private void selectfile_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
+            try
             {
-                openFileDialog1.ShowDialog(this);
-                pathtofile.Text = openFileDialog1.FileName;
-                IronXL.License.LicenseKey = "IRONSUITE.BANE160404.GMAIL.COM.20890-C21CB11042-D7VVKVY-SB2TCSAEJSXZ-IDRVUE6LLECH-WR5XC5EIXO3H-2MDYLAL5GTLM-BQFQIH32DRFT-OYWXDRGY3VSN-XVM6C4-TSBF6GOMXIWLEA-DEPLOYMENT.TRIAL-UHLE54.TRIAL.EXPIRES.26.NOV.2023";
-
-                WorkBook wb = WorkBook.Load(pathtofile.Text);
-                cbsheets.Items.Clear();
-                foreach (var ws in wb.WorkSheets)
+                using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
                 {
+                    openFileDialog1.ShowDialog(this);
+                    pathtofile.Text = openFileDialog1.FileName;
+                    IronXL.License.LicenseKey = "IRONSUITE.BANE160404.GMAIL.COM.20890-C21CB11042-D7VVKVY-SB2TCSAEJSXZ-IDRVUE6LLECH-WR5XC5EIXO3H-2MDYLAL5GTLM-BQFQIH32DRFT-OYWXDRGY3VSN-XVM6C4-TSBF6GOMXIWLEA-DEPLOYMENT.TRIAL-UHLE54.TRIAL.EXPIRES.26.NOV.2023";
 
-                    cbsheets.Items.Add(ws.Name);
+                    WorkBook wb = WorkBook.Load(pathtofile.Text);
+                    cbsheets.Items.Clear();
+                    foreach (var ws in wb.WorkSheets)
+                    {
 
+                        cbsheets.Items.Add(ws.Name);
+
+                    }
+                    wb.Close();
                 }
-                wb.Close();
+            }
+            catch (FileNotFoundException ffe)
+            {
+                PrintInfo.ShowMessage("Fajl nije odabran.");
+            }
+            catch
+            {
+                PrintInfo.ShowMessage("Nije moguce otvoriti fajl.");
             }
         }
 

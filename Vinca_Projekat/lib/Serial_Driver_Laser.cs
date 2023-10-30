@@ -44,7 +44,7 @@ namespace Vinca_Projekat.lib
             }
             catch
             {
-                MessageBox.Show("Konkecija sa stampacom nije uspela.");
+                PrintInfo.ShowMessage("Konekcija sa stampacom nije uspela.");
                 return false;
             }
             return false;

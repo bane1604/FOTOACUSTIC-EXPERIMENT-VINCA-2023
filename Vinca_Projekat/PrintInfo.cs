@@ -7,17 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Vinca_Projekat.lib;
 
 namespace Vinca_Projekat
 {
-    public partial class LockInTest : Form
+    public partial class PrintInfo : Form
     {
-
-        public static bool inuse = false;
-        public LockInTest()
+        public PrintInfo(String text)
         {
             InitializeComponent();
+            label1.Text = text;
         }
 
         public const int WM_NCLBUTTONDOWN = 0xA1;
@@ -28,7 +26,7 @@ namespace Vinca_Projekat
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
 
-        private void LockInTest_MouseDown(object sender, MouseEventArgs e)
+        private void PrintInfo_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -37,31 +35,13 @@ namespace Vinca_Projekat
             }
         }
 
-        private void clrbtn_Click(object sender, EventArgs e)
+        public static void ShowMessage(String text)
         {
-            outputtb.Clear();
+            new PrintInfo(text).ShowDialog();
         }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            inuse = false;
-            SR850_LOCK_IN_DRIVER.releaseForm();
-            this.Dispose();
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
-            SR850_LOCK_IN_DRIVER.send_command(cmndtb.Text);
-        }
-
-        public void Output(string value)
-        {
-            if (InvokeRequired)
-            {
-                this.Invoke(new Action<string>(Output), new object[] { value });
-                return;
-            }
-            outputtb.Text += value;
+            this.Dispose();
         }
     }
 }

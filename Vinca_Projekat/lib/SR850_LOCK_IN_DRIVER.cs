@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,10 +16,22 @@ namespace Vinca_Projekat.lib
         private static SerialPort lckin = null;
         public static LockInTest my_form = null;
         public static int outputdata = -1;
+        private static SerialDataReceivedEventHandler my_handler= null;
         
+        public static void setForm(LockInTest form)
+        {
+            my_form = form;
+            my_handler = new SerialDataReceivedEventHandler(DataReceivedHandler);
+            lckin.DataReceived += my_handler;
+        }
 
+        public static void releaseForm()
+        {
+            my_form = null;
+            lckin.DataReceived -= my_handler;
+        }
         public static bool is_Connected() { return _connected; }
-        public static bool Connect(String port, int BaudRate, LockInTest mfrm)
+        public static bool Connect(String port, int BaudRate)
         {
             try
             {
@@ -27,9 +40,8 @@ namespace Vinca_Projekat.lib
 
                     lckin = new SerialPort(port, BaudRate);
                     lckin.Encoding = Encoding.ASCII;
-                    my_form = mfrm;
+                    
                    
-                    lckin.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
                     lckin.Open();
                     _connected = true;
 
@@ -38,7 +50,7 @@ namespace Vinca_Projekat.lib
             }
             catch
             {
-                MessageBox.Show("Konkecija sa SR850 nije uspela.");
+                PrintInfo.ShowMessage("Konekcija sa SR850 nije uspela.");
                 return false;
             }
             return false;
