@@ -99,16 +99,6 @@ namespace Vinca_Projekat.lib
             return (Byte)lckin.ReadByte();
         }
 
-        public static string read_existing()
-        {
-            return ((SerialPort)lckin).ReadExisting();
-        }
-
-        public static string read_line()
-        {
-            return ((SerialPort)lckin).ReadLine();
-        }
-
         public static void send_command(String command)
         {
             lckin.WriteLine(command);

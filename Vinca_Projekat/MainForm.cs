@@ -45,10 +45,6 @@ namespace Vinca_Projekat
 
 
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 
 
 
