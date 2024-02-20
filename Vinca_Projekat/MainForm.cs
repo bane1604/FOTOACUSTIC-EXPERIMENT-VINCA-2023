@@ -33,6 +33,7 @@ namespace Vinca_Projekat
         public MainForm()
         {
             InitializeComponent();
+            cbsamplerate.SelectedIndex = 5;
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -257,11 +258,7 @@ namespace Vinca_Projekat
         private static int par3;
         private static int par4;
 
-        private void start_exp()
-        {
-            EXPERIMENT_LIB.begin_experiment_v2(
-                par1, par2, par3);
-        }
+
 
         private void button4_Click(object sender, EventArgs e)
         {
@@ -279,10 +276,10 @@ namespace Vinca_Projekat
             try
             {
 
-                par1 = Convert.ToInt32(cbbrojmerenja.SelectedItem.ToString());
+                par1 = Convert.ToInt32(textBox1.Text);
                 par2 = Convert.ToInt32(cbsamplerate.Text);
-                par3 = Convert.ToInt32(tbvremeakvizicije.Text);
-                par4 = 10000;
+                par3 = Convert.ToInt32(tbvrememerenja.Text);
+                par4 = Convert.ToInt32(tbvremestabilizacije.Text);
 
 
 
@@ -301,7 +298,7 @@ namespace Vinca_Projekat
                 PrintInfo.ShowMessage("Nisu valjani parametri eksperimenta.");
                 return;
             }
-            expt = new Thread(start_exp);
+            expt = new Thread(() => EXPERIMENT_LIB.begin_experiment(par1, par2, par3, par4));
             expt.Start();
         }
 
@@ -396,8 +393,8 @@ namespace Vinca_Projekat
                 {
                     int col = 3;
                     double[] dataR = EXPERIMENT_LIB.get_R_data(i);
-                    
-                    for( int z = 0; z < EXPERIMENT_LIB.brt; z++ )
+
+                    for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
                     {
                         ws.SetCellValue(i + 1, col, dataR[z]);
                         col++;
@@ -446,6 +443,53 @@ namespace Vinca_Projekat
 
             }
             this.Show();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            datagrid.Rows.Clear();
+            int a = 5;
+            try
+            {
+                a = Int32.Parse(textBox1.Text);
+
+
+            }
+            catch (Exception ex)
+            {
+                textBox1.Text = "5";
+            }
+            finally
+            {
+                for (int i = 0; i < a; i++)
+                {
+                    datagrid.Rows.Add();
+                }
+            }
+        }
+
+        private void tbvremestabilizacije_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                Int32.Parse(tbvremestabilizacije.Text);
+            }
+            catch (Exception ex)
+            {
+                tbvremestabilizacije.Text = "20";
+            }
+        }
+
+        private void tbvrememerenja_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                Int32.Parse(tbvrememerenja.Text);
+            }
+            catch (Exception ex)
+            {
+                tbvrememerenja.Text = "5";
+            }
         }
     }
 }
