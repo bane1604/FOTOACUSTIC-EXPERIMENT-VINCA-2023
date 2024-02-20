@@ -12,21 +12,20 @@ using System.Windows.Forms;
 
 namespace Vinca_Projekat.lib
 {
-    internal class Serial_Driver_Laser
+    internal static class Serial_Driver_Laser
     {
         private static bool _connected = false;
         private static SerialPort printer = null;
         private static int lineno = 1;
-        private static int okcnt = 0;
 
 
         private static int duty;
         private static int power;
-        private static Form1 my_form = null;
+        private static MainForm my_form = null;
 
 
         public static bool is_Connected() { return _connected; }
-        public static bool Connect(String port, int BaudRate, Form1 mfrm )
+        public static bool Connect(String port, int BaudRate, MainForm mfrm )
         {
             try
             {
@@ -45,7 +44,7 @@ namespace Vinca_Projekat.lib
             }
             catch
             {
-                MessageBox.Show("Konkecija sa stampacom nije uspela.");
+                PrintInfo.ShowMessage("Konekcija sa stampacom nije uspela.");
                 return false;
             }
             return false;
@@ -84,6 +83,7 @@ namespace Vinca_Projekat.lib
             if( timerEventArgs.TimerCount % 20 == duty)
             {
                 send_instruction("M107");
+                return;
             }
             if( timerEventArgs.TimerCount % 20 == 0)
             {
@@ -124,7 +124,7 @@ namespace Vinca_Projekat.lib
 
 
                 microTimer.Interval = (1000000) / (frekv * 20);
-                Console.WriteLine(microTimer.Interval.ToString());
+               
 
                 send_instruction("M106 S" + power.ToString());
                 microTimer.Start();
