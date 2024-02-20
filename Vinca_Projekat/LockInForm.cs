@@ -7,6 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+<<<<<<< Updated upstream
+=======
+using System.Windows.Forms.VisualStyles;
+>>>>>>> Stashed changes
 using Vinca_Projekat.lib;
 
 namespace Vinca_Projekat
@@ -19,7 +23,14 @@ namespace Vinca_Projekat
 
         public LockInForm()
         {
+<<<<<<< Updated upstream
             InitializeComponent();
+=======
+            
+            InitializeComponent();
+            
+            read();
+>>>>>>> Stashed changes
             rmcb.SelectedIndex = rmcb_selected;
             tccb.SelectedIndex = tcb_selected;
             lpcb.SelectedIndex = lpcb_selected;

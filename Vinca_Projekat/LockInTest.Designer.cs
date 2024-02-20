@@ -104,6 +104,7 @@
             Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             Name = "LockInTest";
             Text = "LockInTest";
+            Load += LockInTest_Load;
             MouseDown += LockInTest_MouseDown;
             ResumeLayout(false);
             PerformLayout();

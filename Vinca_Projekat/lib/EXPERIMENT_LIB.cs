@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace Vinca_Projekat.lib
 {
@@ -22,6 +23,9 @@ namespace Vinca_Projekat.lib
         public static int[] snaga = new Int32[102];
         public static int[] frekv =new Int32[102];
         public static int[] duty =new Int32[102];
+
+        public static int brt;
+        public static int br_merenja;
 
         private static List<double>[] Rval =  new List<double>[102];
         private static List<double>[] Tval = new List<double>[102];
@@ -160,6 +164,163 @@ namespace Vinca_Projekat.lib
             }
             
             
+        }
+
+        private static void writebyte( Byte b )
+        {
+            for( int i = 0; i < 8; i++ )
+            {
+                if( (b & 1) == 1 )
+                {
+                    Console.Write("1");
+                }
+                else
+                {
+                    Console.Write("0");
+                }
+                b = (Byte) (b >> 1);
+            }
+        }
+
+        public static void begin_experiment_v2(int n, int sample_rate, int vreme_merenja )
+        {
+            Thread t = null;
+            bool repeat = false;
+            int val = 4 + Convert.ToInt32(Math.Log2(Convert.ToDouble(sample_rate)));
+            broj_tacaka = sample_rate * vreme_merenja;
+            SR850_LOCK_IN_DRIVER.send_command("SRAT " + val.ToString());
+            SR850_LOCK_IN_DRIVER.send_command("SEND 0");
+            SR850_LOCK_IN_DRIVER.send_command("SLEN " + vreme_merenja.ToString());
+            SR850_LOCK_IN_DRIVER.send_command("REST");
+            SR850_LOCK_IN_DRIVER.send_command("TRCD 3,3,0,0,1");
+            SR850_LOCK_IN_DRIVER.send_command("TRCD 4,4,0,0,1");
+            SR850_LOCK_IN_DRIVER.send_command("REST");
+
+            brt = broj_tacaka;
+            EXPERIMENT_LIB.br_merenja = n;
+            try
+            {
+
+                for (int i = 0; i < n; i++)
+                {
+                    if (repeat) i--;
+                    repeat = false;
+                    curi = i;
+                    //start the thread for laser
+                    SR850_LOCK_IN_DRIVER.send_command("REST");
+                    Console.WriteLine("Pokretanje lasera");
+                    t = new Thread(() => Serial_Driver_Laser.laser_start(snaga[i], frekv[i], 100000, duty[i]));
+                    t.Start();
+                    Console.WriteLine("Cekanje za stabilizaciju 20s");
+                    Thread.Sleep(20000);
+
+
+                    Console.WriteLine("Zapocinjanje merenja!");
+                    SR850_LOCK_IN_DRIVER.send_command("STRT");
+                    Thread.Sleep(vreme_merenja * 1000);
+                    Console.WriteLine("Merenje zavrseno!");
+
+
+                    SR850_LOCK_IN_DRIVER.flushin();
+                    Console.WriteLine("Broj izmerenih tacaka (R) je: ");
+                    SR850_LOCK_IN_DRIVER.send_command("SPTS ? 3");
+                    string izmereno = SR850_LOCK_IN_DRIVER.read_line();
+                    Console.WriteLine(izmereno);
+
+                    int iz = Convert.ToInt32(izmereno);
+                    if (iz >= broj_tacaka)
+                    {
+                        Rval[i] = new List<double>();
+                        for (int j = 0; j < broj_tacaka; j++)
+                        {
+                            SR850_LOCK_IN_DRIVER.flushin();
+                            SR850_LOCK_IN_DRIVER.send_command("TRCL ? 3," + j.ToString() + ",1");
+
+                            Byte m2 = SR850_LOCK_IN_DRIVER.read_byte();
+                            Byte m1 = SR850_LOCK_IN_DRIVER.read_byte();
+                            Byte exp = SR850_LOCK_IN_DRIVER.read_byte();
+                            Byte zero = SR850_LOCK_IN_DRIVER.read_byte();
+
+                            int z1= m1;
+                            z1 = z1 << 8;
+                            uint z2 = m2;
+                            
+                            int mantisa = (int) ((uint) z1 + z2 );
+                            
+                            
+                            double broj = Math.Pow(2, (int)exp-124) * mantisa;
+                            Rval[i].Add(broj);
+
+                        }
+
+
+
+                    }
+                    else
+                    {
+                        repeat = true;
+                    }
+
+                    SR850_LOCK_IN_DRIVER.flushin();
+                    Console.WriteLine("Broj izmerenih tacaka (T) je: ");
+                    SR850_LOCK_IN_DRIVER.send_command("SPTS ? 4");
+                    string izmerenoT = SR850_LOCK_IN_DRIVER.read_line();
+                    Console.WriteLine(izmerenoT);
+
+                    int izT = Convert.ToInt32(izmereno);
+                    if (izT >= broj_tacaka)
+                    {
+                        Tval[i] = new List<double>();
+                        for (int j = 0; j < broj_tacaka; j++)
+                        {
+                            SR850_LOCK_IN_DRIVER.flushin();
+                            SR850_LOCK_IN_DRIVER.send_command("TRCL ? 4," + j.ToString() + ",1");
+
+                            Byte m2 = SR850_LOCK_IN_DRIVER.read_byte();
+                            Byte m1 = SR850_LOCK_IN_DRIVER.read_byte();
+                            Byte exp = SR850_LOCK_IN_DRIVER.read_byte();
+                            Byte zero = SR850_LOCK_IN_DRIVER.read_byte();
+
+                            int z1 = m1;
+                            z1 = z1 << 8;
+                            uint z2 = m2;
+
+                            int mantisa = (int)((uint)z1 + z2);
+
+                            double broj = Math.Pow(2, (int)exp - 124) * mantisa;
+                            Tval[i].Add(broj);
+                        }
+                        Console.WriteLine();
+
+
+
+                    }
+                    else
+                    {
+                        repeat = true;
+                    }
+
+
+                    Console.Out.WriteLine("gasenje lasera");
+                    if (t != null && t.IsAlive)
+                    {
+                        t.Interrupt();
+                    }
+                    t.Join();
+
+                }
+                PrintInfo.ShowMessage("Merenje je zavrseno!");
+            }
+            catch( Exception e)
+            {
+                Console.WriteLine(e.Message); Console.WriteLine();
+                if (t != null && t.IsAlive)
+                {
+                    t.Interrupt();
+                }
+                t.Join();
+                
+            }
         }
     }
 }

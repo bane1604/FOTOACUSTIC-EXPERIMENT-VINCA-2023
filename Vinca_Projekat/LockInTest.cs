@@ -63,5 +63,11 @@ namespace Vinca_Projekat
             }
             outputtb.Text += value;
         }
+
+        private void LockInTest_Load(object sender, EventArgs e)
+        {
+            SR850_LOCK_IN_DRIVER.setForm
+                (this);
+        }
     }
 }

@@ -124,7 +124,7 @@ namespace Vinca_Projekat.lib
 
 
                 microTimer.Interval = (1000000) / (frekv * 20);
-                Console.WriteLine(microTimer.Interval.ToString());
+               
 
                 send_instruction("M106 S" + power.ToString());
                 microTimer.Start();

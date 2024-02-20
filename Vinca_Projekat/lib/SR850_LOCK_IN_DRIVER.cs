@@ -20,15 +20,30 @@ namespace Vinca_Projekat.lib
         
         public static void setForm(LockInTest form)
         {
+            
             my_form = form;
             my_handler = new SerialDataReceivedEventHandler(DataReceivedHandler);
             lckin.DataReceived += my_handler;
+
+        }
+
+        private static void DataReceivedHandler(
+                    object sender,
+                    SerialDataReceivedEventArgs e)
+        {
+            SerialPort sp = (SerialPort)lckin;
+
+            String s = sp.ReadExisting();
+            if (my_form != null)
+            {
+                my_form.Output(s);
+            }
         }
 
         public static void releaseForm()
         {
             my_form = null;
-            lckin.DataReceived -= my_handler;
+            lckin.DataReceived -= my_handler;   
         }
         public static bool is_Connected() { return _connected; }
         public static bool Connect(String port, int BaudRate)
@@ -69,22 +84,19 @@ namespace Vinca_Projekat.lib
         }
         
         
-        private static void DataReceivedHandler(
-                    object sender,
-                    SerialDataReceivedEventArgs e)
+
+        public static string read_existing()
         {
-            SerialPort sp = (SerialPort)sender;
-            string indata = sp.ReadExisting();
+            return ((SerialPort)lckin).ReadExisting();
+        }
 
-
-            EXPERIMENT_LIB.append_data(outputdata, indata);
-            try
-            {
-                my_form.Output(indata);
-            }
-            catch
-            {
-            }
+        public static string read_line()
+        {
+            return ((SerialPort)lckin).ReadLine();
+        }
+        public static Byte read_byte()
+        {
+            return (Byte)lckin.ReadByte();
         }
 
         public static string read_existing()

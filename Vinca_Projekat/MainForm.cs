@@ -13,6 +13,7 @@ using Vinca_Projekat.lib;
 using System.Runtime.InteropServices;
 using IronXL;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Vinca_Projekat
 {
@@ -40,14 +41,14 @@ namespace Vinca_Projekat
             this.Close();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
 
 
 
-        }
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
 
 
@@ -262,10 +263,8 @@ namespace Vinca_Projekat
 
         private void start_exp()
         {
-            EXPERIMENT_LIB.begin_experiment(
-                par1, par2, par3, par4,
-                this
-                );
+            EXPERIMENT_LIB.begin_experiment_v2(
+                par1, par2, par3);
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -384,28 +383,35 @@ namespace Vinca_Projekat
                 WorkBook wb = WorkBook.Load(pathtofile.Text);
                 WorkSheet ws = wb.GetWorkSheet(cbsheets.SelectedItem.ToString());
 
+                int cl = 3;
+                for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
+                {
+                    ws.SetCellValue(0, cl, "R" + z.ToString());
+                    cl++;
+                }
+                for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
+                {
+                    ws.SetCellValue(0, cl, "T" + z.ToString());
+                    cl++;
+                }
 
-                for (int i = 0; i < n; i++)
+
+                for (int i = 0; i < EXPERIMENT_LIB.br_merenja; i++)
                 {
                     int col = 3;
-                    double[] dataR = EXPERIMENT_LIB.get_T_data(i);
-                    //MessageBox.Show(dataR.Length.ToString());
-                    for (int ix = 5; ix < dataR.Length - 4; ix++)
+                    double[] dataR = EXPERIMENT_LIB.get_R_data(i);
+                    
+                    for( int z = 0; z < EXPERIMENT_LIB.brt; z++ )
                     {
-                        ws.SetCellValue(0, col, "R" + ((ix) - 5).ToString());
-
-                        ws.SetCellValue(i + 1, col, dataR[ix]);
+                        ws.SetCellValue(i + 1, col, dataR[z]);
                         col++;
-
                     }
 
-                    double[] dataT = EXPERIMENT_LIB.get_R_data(i);
-                    //MessageBox.Show(dataT.Length.ToString());
-                    for (int ix = 5; ix < dataT.Length - 4; ix++)
-                    {
-                        ws.SetCellValue(0, col, "T" + ((ix) - 5).ToString());
+                    double[] dataT = EXPERIMENT_LIB.get_T_data(i);
 
-                        ws.SetCellValue(i + 1, col, dataT[ix]);
+                    for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
+                    {
+                        ws.SetCellValue(i + 1, col, dataT[z]);
                         col++;
                     }
 
@@ -413,7 +419,7 @@ namespace Vinca_Projekat
                 wb.Save();
 
                 wb.Close();
-                MessageBox.Show("Podaci su upisani!");
+                PrintInfo.ShowMessage("Podaci su upisani!");
             }
             catch (Exception es)
             { MessageBox.Show(es.ToString()); }
