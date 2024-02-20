@@ -43,6 +43,8 @@ namespace Vinca_Projekat.lib
                     
                    
                     lckin.Open();
+                    lckin.DiscardInBuffer();
+                    lckin.DiscardOutBuffer();
                     _connected = true;
 
                     return true;
@@ -85,9 +87,28 @@ namespace Vinca_Projekat.lib
             }
         }
 
+        public static string read_existing()
+        {
+            return ((SerialPort)lckin).ReadExisting();
+        }
+
+        public static string read_line()
+        {
+            return ((SerialPort)lckin).ReadLine();
+        }
+
         public static void send_command(String command)
         {
             lckin.WriteLine(command);
+        }
+
+        public static void flushin()
+        {
+            lckin.DiscardInBuffer();
+        }
+        public static void flushout()
+        {
+            lckin.DiscardOutBuffer();
         }
     }
 }

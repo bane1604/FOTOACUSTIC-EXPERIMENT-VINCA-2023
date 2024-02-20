@@ -47,24 +47,7 @@ namespace Vinca_Projekat
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if (Serial_Driver_Laser.is_Connected())
-            {
-                Serial_Driver_Laser.Disconnect();
-                button1.Text = "Connect";
-                button2.Enabled = false;
-            }
-            else
-            {
-                if (Serial_Driver_Laser.Connect(comboBox1.GetItemText(comboBox1.SelectedItem), 115200, this))
-                {
-                    button1.Text = "Disconnect";
-                    button2.Enabled = true;
-                }
-            }
 
-        }
 
 
 
@@ -88,50 +71,6 @@ namespace Vinca_Projekat
             }
         }
 
-        private void button5_Click_1(object sender, EventArgs e)
-        {
-            var ports = SerialPort.GetPortNames();
-            comboBox1.DataSource = ports;
-
-
-            String[] baud_rates = { "115200" };
-            comboBox2.DataSource = baud_rates;
-        }
-
-
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-            var ports = SerialPort.GetPortNames();
-            comboBox3.DataSource = ports;
-
-
-            String[] baud_rates = { "9600" };
-            comboBox4.DataSource = baud_rates;
-        }
-
-        private void button8_Click(object sender, EventArgs e)
-        {
-            if (SR850_LOCK_IN_DRIVER.is_Connected())
-            {
-                SR850_LOCK_IN_DRIVER.Disconnect();
-
-
-                button8.Text = "Connect";
-                button3.Enabled = false;
-
-            }
-            else
-            {
-                bool retval = SR850_LOCK_IN_DRIVER.Connect(comboBox3.GetItemText(comboBox3.SelectedItem), 9600);
-
-                if (retval)
-                {
-                    button8.Text = "Disconnect";
-                    button3.Enabled = true;
-                }
-            }
-        }
 
 
 
@@ -155,7 +94,7 @@ namespace Vinca_Projekat
 
         public int get_vreme_merenja()
         {
-            return Convert.ToInt32(vremepucanjatb.Text);
+            return 10000;
         }
 
 
@@ -332,7 +271,7 @@ namespace Vinca_Projekat
         private void button4_Click(object sender, EventArgs e)
         {
 
-            if( !SR850_LOCK_IN_DRIVER.is_Connected())
+            if (!SR850_LOCK_IN_DRIVER.is_Connected())
             {
                 PrintInfo.ShowMessage("Lock in uredjaj nije povezan.");
                 return;
@@ -348,7 +287,7 @@ namespace Vinca_Projekat
                 par1 = Convert.ToInt32(cbbrojmerenja.SelectedItem.ToString());
                 par2 = Convert.ToInt32(cbsamplerate.Text);
                 par3 = Convert.ToInt32(tbvremeakvizicije.Text);
-                par4 = Convert.ToInt32(vremepucanjatb.Text);
+                par4 = 10000;
 
 
 
@@ -378,7 +317,7 @@ namespace Vinca_Projekat
 
         private void importbtn_Click(object sender, EventArgs e)
         {
-            IronXL.License.LicenseKey = "IRONSUITE.BANE160404.GMAIL.COM.20890-C21CB11042-D7VVKVY-SB2TCSAEJSXZ-IDRVUE6LLECH-WR5XC5EIXO3H-2MDYLAL5GTLM-BQFQIH32DRFT-OYWXDRGY3VSN-XVM6C4-TSBF6GOMXIWLEA-DEPLOYMENT.TRIAL-UHLE54.TRIAL.EXPIRES.26.NOV.2023";
+            IronXL.License.LicenseKey = "IRONSUITE.MIOLJUB.GMAIL.COM.21532-A741AA501B-M3KMN-4BJ37NHO4ASV-JDZKWGB2YJMM-YXHOI7W7B5DD-3MFD33EUBIEX-4DQIL3P64OY5-RB5L4O3XOLFX-XUC7XE-TI7LUU3P77WLUA-DEPLOYMENT.TRIAL-MURWUZ.TRIAL.EXPIRES.15.MAR.2024";
 
             WorkBook wb = WorkBook.Load(pathtofile.Text);
             WorkSheet ws = wb.GetWorkSheet(cbsheets.SelectedItem.ToString());
@@ -414,7 +353,7 @@ namespace Vinca_Projekat
                 {
                     openFileDialog1.ShowDialog(this);
                     pathtofile.Text = openFileDialog1.FileName;
-                    IronXL.License.LicenseKey = "IRONSUITE.BANE160404.GMAIL.COM.20890-C21CB11042-D7VVKVY-SB2TCSAEJSXZ-IDRVUE6LLECH-WR5XC5EIXO3H-2MDYLAL5GTLM-BQFQIH32DRFT-OYWXDRGY3VSN-XVM6C4-TSBF6GOMXIWLEA-DEPLOYMENT.TRIAL-UHLE54.TRIAL.EXPIRES.26.NOV.2023";
+                    IronXL.License.LicenseKey = "IRONSUITE.MIOLJUB.GMAIL.COM.21532-A741AA501B-M3KMN-4BJ37NHO4ASV-JDZKWGB2YJMM-YXHOI7W7B5DD-3MFD33EUBIEX-4DQIL3P64OY5-RB5L4O3XOLFX-XUC7XE-TI7LUU3P77WLUA-DEPLOYMENT.TRIAL-MURWUZ.TRIAL.EXPIRES.15.MAR.2024";
 
                     WorkBook wb = WorkBook.Load(pathtofile.Text);
                     cbsheets.Items.Clear();
@@ -478,6 +417,33 @@ namespace Vinca_Projekat
             }
             catch (Exception es)
             { MessageBox.Show(es.ToString()); }
+        }
+
+        private void connectform_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            using (ConnectionForm z = new ConnectionForm())
+            {
+
+                z.ShowDialog();
+
+
+            }
+            this.Show();
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            using (LockInForm z = new LockInForm())
+            {
+
+                z.ShowDialog();
+
+
+            }
+            this.Show();
         }
     }
 }

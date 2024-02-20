@@ -89,7 +89,7 @@ namespace Vinca_Projekat.lib
                     t.Start();
                     
 
-                    Thread.Sleep(5000);
+                    Thread.Sleep(10000);
                     //mfrm.update_status("Status: Recording", i);
                     SR850_LOCK_IN_DRIVER.send_command("STRT");
                     Thread.Sleep(vreme_merenja * 1000);
@@ -97,11 +97,11 @@ namespace Vinca_Projekat.lib
                     //mfrm.update_status("Status: Saving", i);
                     SR850_LOCK_IN_DRIVER.outputdata = i;
                     flag = false;
-                    SR850_LOCK_IN_DRIVER.send_command("TRCA ? 2,0," + broj_tacaka.ToString());
+                    SR850_LOCK_IN_DRIVER.send_command("TRCA ? 3,0," + broj_tacaka.ToString());
                     Thread.Sleep(10000);
                     
                     flag = true;
-                    SR850_LOCK_IN_DRIVER.send_command("TRCA ? 3,0," + broj_tacaka.ToString());
+                    SR850_LOCK_IN_DRIVER.send_command("TRCA ? 4,0," + broj_tacaka.ToString());
                     Thread.Sleep(10000);
                     SR850_LOCK_IN_DRIVER.outputdata = -1;
                     
@@ -109,6 +109,8 @@ namespace Vinca_Projekat.lib
                     SR850_LOCK_IN_DRIVER.send_command("REST");
                     
                     Thread.Sleep(1000);
+                    if (t != null && t.IsAlive)
+                        t.Interrupt();
                     t.Join();
                     //mfrm.update_status("Status: Finished", i);
                 }
