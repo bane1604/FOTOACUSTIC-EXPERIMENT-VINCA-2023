@@ -106,13 +106,22 @@ namespace Vinca_Projekat.lib
                     Console.WriteLine("Merenje zavrseno!");
 
 
-                    SR850_LOCK_IN_DRIVER.flushin();
-                    Console.WriteLine("Broj izmerenih tacaka (R) je: ");
-                    SR850_LOCK_IN_DRIVER.send_command("SPTS ? 3");
-                    string izmereno = SR850_LOCK_IN_DRIVER.read_line();
-                    Console.WriteLine(izmereno);
-
-                    int iz = Convert.ToInt32(izmereno);
+                    int iz = 0;
+                    bool flagl = true;
+                    while (flagl)
+                    {
+                        flagl = false;
+                        SR850_LOCK_IN_DRIVER.flushin();
+                        Console.WriteLine("Broj izmerenih tacaka (R) je: ");
+                        SR850_LOCK_IN_DRIVER.send_command("SPTS ? 3");
+                        string izmereno = SR850_LOCK_IN_DRIVER.read_line();
+                        Console.WriteLine(izmereno);
+                        try
+                        {
+                            iz = Convert.ToInt32(izmereno);
+                        }
+                        catch (Exception ex) { flagl = true; }
+                    }
                     if (iz >= broj_tacaka)
                     {
                         Rval[i] = new List<double>();
@@ -134,7 +143,12 @@ namespace Vinca_Projekat.lib
                             
                             
                             double broj = Math.Pow(2, (int)exp-124) * mantisa;
-                            Rval[i].Add(broj);
+                            if (Rval[i].Count != 0 && (Math.Abs(broj) < Math.Abs(Rval[i].Last()) / 1000 || Math.Abs(broj) > 1000 * Math.Abs(Rval[i].Last()))) {
+                                j--;
+                            }
+                            else {
+                                Rval[i].Add(broj);
+                            }
 
                         }
 
@@ -146,14 +160,26 @@ namespace Vinca_Projekat.lib
                         repeat = true;
                     }
 
-                    SR850_LOCK_IN_DRIVER.flushin();
-                    Console.WriteLine("Broj izmerenih tacaka (T) je: ");
-                    SR850_LOCK_IN_DRIVER.send_command("SPTS ? 4");
-                    string izmerenoT = SR850_LOCK_IN_DRIVER.read_line();
-                    Console.WriteLine(izmerenoT);
-
-                    int izT = Convert.ToInt32(izmereno);
-                    if (izT >= broj_tacaka)
+                    bool flaglosa = true;
+                    int izT = 0;
+                    while (flaglosa)
+                    {
+                        
+                        flaglosa = false;
+                        SR850_LOCK_IN_DRIVER.flushin();
+                        Console.WriteLine("Broj izmerenih tacaka (T) je: ");
+                        SR850_LOCK_IN_DRIVER.send_command("SPTS ? 4");
+                        string izmerenoT = SR850_LOCK_IN_DRIVER.read_line();
+                        Console.WriteLine(izmerenoT);
+                        try
+                        {
+                            izT = Convert.ToInt32(izmerenoT);
+                        }
+                        catch( Exception e) {
+                            flaglosa = true;
+                        }
+                    }
+                        if (izT >= broj_tacaka)
                     {
                         Tval[i] = new List<double>();
                         for (int j = 0; j < broj_tacaka; j++)
@@ -166,14 +192,29 @@ namespace Vinca_Projekat.lib
                             Byte exp = SR850_LOCK_IN_DRIVER.read_byte();
                             Byte zero = SR850_LOCK_IN_DRIVER.read_byte();
 
-                            int z1 = m1;
+                            int z1 = Convert.ToInt32(m1);
                             z1 = z1 << 8;
-                            uint z2 = m2;
 
-                            int mantisa = (int)((uint)z1 + z2);
+                            uint z2 = Convert.ToUInt32(m2);
 
+                            if ((m1 & (Byte)0x80) != (Byte)0x00)
+                            {
+                                m1 = (Byte)(~m1 + (Byte)1);
+                                z1 = m1 << 8;
+                                z1 = -z1;
+                            }
+                            
+                            int mantisa = (int) (Math.Abs(z1) + Math.Abs(z2)) ;
+                            if (z1 < 0)
+                                mantisa = -mantisa;
                             double broj = Math.Pow(2, (int)exp - 124) * mantisa;
-                            Tval[i].Add(broj);
+                            if (Tval[i].Count != 0 && (Math.Abs(broj) < Math.Abs(Tval[i].Last()) / 1000 || Math.Abs(broj) > 1000 * Math.Abs(Tval[i].Last()))) {
+                                j--;
+                            }
+                            else
+                            {
+                                Tval[i].Add(broj);
+                            }
                         }
                         Console.WriteLine();
 

@@ -27,6 +27,7 @@ namespace Vinca_Projekat
         Button[] rbuttons = new Button[10];
         Button[] tbuttons = new Button[10];
         Thread expt = null;
+        Thread mexpt = null;
 
 
 
@@ -251,7 +252,7 @@ namespace Vinca_Projekat
 
         }
 
-
+        private static int par0;
         private static int par1;
 
         private static int par2;
@@ -312,9 +313,15 @@ namespace Vinca_Projekat
             IronXL.License.LicenseKey = "IRONSUITE.MIOLJUB.GMAIL.COM.21532-A741AA501B-M3KMN-4BJ37NHO4ASV-JDZKWGB2YJMM-YXHOI7W7B5DD-3MFD33EUBIEX-4DQIL3P64OY5-RB5L4O3XOLFX-XUC7XE-TI7LUU3P77WLUA-DEPLOYMENT.TRIAL-MURWUZ.TRIAL.EXPIRES.15.MAR.2024";
 
             WorkBook wb = WorkBook.Load(pathtofile.Text);
-            WorkSheet ws = wb.GetWorkSheet(cbsheets.SelectedItem.ToString());
+            if (wb == null)
+            {
+                PrintInfo.ShowMessage("Fajl nije pronadjen");
+                return;
+            }
 
-            int n = Convert.ToInt32(cbbrojmerenja.SelectedItem.ToString()) + 1;
+            WorkSheet ws = wb.GetWorkSheet(cbsheets.Text);
+
+            int n = Int32.Parse(textBox1.Text) + 1;
 
 
             if (ws == null) { wb.Close(); return; }
@@ -372,7 +379,7 @@ namespace Vinca_Projekat
         {
             try
             {
-                int n = Convert.ToInt32(cbbrojmerenja.SelectedItem.ToString());
+                int n = Convert.ToInt32(textBox1.Text);
                 WorkBook wb = WorkBook.Load(pathtofile.Text);
                 WorkSheet ws = wb.GetWorkSheet(cbsheets.SelectedItem.ToString());
 
@@ -448,6 +455,7 @@ namespace Vinca_Projekat
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             datagrid.Rows.Clear();
+            if (textBox1.Text == "") { return; }
             int a = 5;
             try
             {
@@ -470,6 +478,7 @@ namespace Vinca_Projekat
 
         private void tbvremestabilizacije_TextChanged(object sender, EventArgs e)
         {
+            if (tbvremestabilizacije.Text == "") { return; }
             try
             {
                 Int32.Parse(tbvremestabilizacije.Text);
@@ -482,6 +491,7 @@ namespace Vinca_Projekat
 
         private void tbvrememerenja_TextChanged(object sender, EventArgs e)
         {
+            if (tbvremestabilizacije.Text == "") { return; }
             try
             {
                 Int32.Parse(tbvrememerenja.Text);
@@ -490,6 +500,118 @@ namespace Vinca_Projekat
             {
                 tbvrememerenja.Text = "5";
             }
+        }
+
+        private void multiple_run(int iter, int brmerenja, int sample, int vreme, int stab)
+        {
+            for (int i = 0; i < iter; i++)
+            {
+                EXPERIMENT_LIB.begin_experiment(brmerenja, sample, vreme, stab);
+                fill_data(i * (brmerenja + 1));
+            }
+        }
+
+
+        private void fill_data(int red)
+        {
+            try
+            {
+                int n = Convert.ToInt32(textBox1.Text);
+                WorkBook wb = WorkBook.Load(pathtofile.Text);
+                WorkSheet ws = wb.GetWorkSheet(cbsheets.SelectedItem.ToString());
+
+                int cl = 3;
+                for (int i = 0; i < EXPERIMENT_LIB.br_merenja; i++)
+                {
+                    ws.SetCellValue(red + i + 1, 0, datagrid.Rows[i].Cells[0].Value);
+                    ws.SetCellValue(red + i + 1, 1, datagrid.Rows[i].Cells[1].Value);
+                    ws.SetCellValue(red + i + 1, 2, datagrid.Rows[i].Cells[2].Value);
+                }
+                for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
+                {
+                    ws.SetCellValue(red, cl, "R" + z.ToString());
+                    cl++;
+                }
+                for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
+                {
+                    ws.SetCellValue(red, cl, "T" + z.ToString());
+                    cl++;
+                }
+
+
+                for (int i = red; i < EXPERIMENT_LIB.br_merenja; i++)
+                {
+                    int col = 3;
+                    double[] dataR = EXPERIMENT_LIB.get_R_data(i);
+
+                    for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
+                    {
+                        ws.SetCellValue(i + 1, col, dataR[z]);
+                        col++;
+                    }
+
+                    double[] dataT = EXPERIMENT_LIB.get_T_data(i);
+
+                    for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
+                    {
+                        ws.SetCellValue(i + 1, col, dataT[z]);
+                        col++;
+                    }
+
+                }
+                wb.Save();
+
+                wb.Close();
+                PrintInfo.ShowMessage("Podaci su upisani!");
+            }
+            catch (Exception es)
+            { PrintInfo.ShowMessage(es.ToString()); }
+        }
+
+        private void itertb_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void startmb_Click(object sender, EventArgs e)
+        {
+            if (!SR850_LOCK_IN_DRIVER.is_Connected())
+            {
+                PrintInfo.ShowMessage("Lock in uredjaj nije povezan.");
+                return;
+            }
+            if (!Serial_Driver_Laser.is_Connected())
+            {
+                PrintInfo.ShowMessage("Laser nije povezan.");
+                return;
+            }
+            try
+            {
+                //par0 = Convert.ToInt32(itertb.Text);
+                par1 = Convert.ToInt32(textBox1.Text);
+                par2 = Convert.ToInt32(cbsamplerate.Text);
+                par3 = Convert.ToInt32(tbvrememerenja.Text);
+                par4 = Convert.ToInt32(tbvremestabilizacije.Text);
+
+
+
+                for (int i = 0; i < par1; i++)
+                {
+
+                    EXPERIMENT_LIB.snaga[i] = (int)Math.Ceiling((Convert.ToDouble(datagrid.Rows[i].Cells[0].Value.ToString()) * 255.0) / 100.0);
+
+                    EXPERIMENT_LIB.frekv[i] = Convert.ToInt32(datagrid.Rows[i].Cells[1].Value.ToString());
+
+                    EXPERIMENT_LIB.duty[i] = Convert.ToInt32(datagrid.Rows[i].Cells[2].Value.ToString()) / 5;
+                }
+            }
+            catch
+            {
+                PrintInfo.ShowMessage("Nisu valjani parametri eksperimenta.");
+                return;
+            }
+            expt = new Thread(() => multiple_run(par0, par1, par2, par3, par4));
+            expt.Start();
         }
     }
 }

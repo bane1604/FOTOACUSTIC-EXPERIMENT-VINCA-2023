@@ -17,6 +17,8 @@ namespace Vinca_Projekat
         public ConnectionForm()
         {
             InitializeComponent();
+            if( SR850_LOCK_IN_DRIVER.is_Connected() ) { button3.Enabled = true; }
+            if( Serial_Driver_Laser.is_Connected()) { button2.Enabled = true; }
         }
 
 
