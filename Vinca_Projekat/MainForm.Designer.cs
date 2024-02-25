@@ -67,7 +67,7 @@
             linkLabel1.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             linkLabel1.LinkColor = System.Drawing.Color.Black;
-            linkLabel1.Location = new System.Drawing.Point(810, 5);
+            linkLabel1.Location = new System.Drawing.Point(753, 9);
             linkLabel1.Name = "linkLabel1";
             linkLabel1.Size = new System.Drawing.Size(23, 25);
             linkLabel1.TabIndex = 0;
@@ -85,7 +85,7 @@
             // brmerenjalabel
             // 
             brmerenjalabel.AutoSize = true;
-            brmerenjalabel.Location = new System.Drawing.Point(30, 79);
+            brmerenjalabel.Location = new System.Drawing.Point(25, 79);
             brmerenjalabel.Name = "brmerenjalabel";
             brmerenjalabel.Size = new System.Drawing.Size(88, 16);
             brmerenjalabel.TabIndex = 33;
@@ -95,7 +95,7 @@
             // 
             cbsamplerate.FormattingEnabled = true;
             cbsamplerate.Items.AddRange(new object[] { "1", "2", "4", "8", "16", "32", "64", "128", "256", "512" });
-            cbsamplerate.Location = new System.Drawing.Point(14, 187);
+            cbsamplerate.Location = new System.Drawing.Point(9, 187);
             cbsamplerate.Name = "cbsamplerate";
             cbsamplerate.Size = new System.Drawing.Size(121, 24);
             cbsamplerate.TabIndex = 34;
@@ -103,7 +103,7 @@
             // labelsamplerate
             // 
             labelsamplerate.AutoSize = true;
-            labelsamplerate.Location = new System.Drawing.Point(34, 168);
+            labelsamplerate.Location = new System.Drawing.Point(29, 168);
             labelsamplerate.Name = "labelsamplerate";
             labelsamplerate.Size = new System.Drawing.Size(80, 16);
             labelsamplerate.TabIndex = 35;
@@ -116,7 +116,7 @@
             datagrid.BackgroundColor = System.Drawing.Color.FromArgb(73, 70, 135);
             datagrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             datagrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Snaga, Frekvencija, Duty });
-            datagrid.Location = new System.Drawing.Point(212, 41);
+            datagrid.Location = new System.Drawing.Point(155, 45);
             datagrid.Name = "datagrid";
             datagrid.RowHeadersVisible = false;
             datagrid.RowHeadersWidth = 200;
@@ -149,7 +149,7 @@
             // vremeakvlabel
             // 
             vremeakvlabel.AutoSize = true;
-            vremeakvlabel.Location = new System.Drawing.Point(25, 125);
+            vremeakvlabel.Location = new System.Drawing.Point(20, 125);
             vremeakvlabel.Name = "vremeakvlabel";
             vremeakvlabel.Size = new System.Drawing.Size(98, 16);
             vremeakvlabel.TabIndex = 37;
@@ -157,7 +157,7 @@
             // 
             // tbvrememerenja
             // 
-            tbvrememerenja.Location = new System.Drawing.Point(14, 143);
+            tbvrememerenja.Location = new System.Drawing.Point(9, 143);
             tbvrememerenja.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             tbvrememerenja.Name = "tbvrememerenja";
             tbvrememerenja.Size = new System.Drawing.Size(121, 23);
@@ -167,7 +167,7 @@
             // 
             // button4
             // 
-            button4.Location = new System.Drawing.Point(19, 267);
+            button4.Location = new System.Drawing.Point(20, 277);
             button4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             button4.Name = "button4";
             button4.Size = new System.Drawing.Size(111, 25);
@@ -178,7 +178,7 @@
             // 
             // button6
             // 
-            button6.Location = new System.Drawing.Point(19, 294);
+            button6.Location = new System.Drawing.Point(19, 305);
             button6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             button6.Name = "button6";
             button6.Size = new System.Drawing.Size(111, 25);
@@ -189,14 +189,14 @@
             // 
             // pathtofile
             // 
-            pathtofile.Location = new System.Drawing.Point(198, 306);
+            pathtofile.Location = new System.Drawing.Point(155, 310);
             pathtofile.Name = "pathtofile";
             pathtofile.Size = new System.Drawing.Size(133, 23);
             pathtofile.TabIndex = 43;
             // 
             // selectfile
             // 
-            selectfile.Location = new System.Drawing.Point(337, 305);
+            selectfile.Location = new System.Drawing.Point(294, 309);
             selectfile.Name = "selectfile";
             selectfile.Size = new System.Drawing.Size(111, 25);
             selectfile.TabIndex = 44;
@@ -207,7 +207,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(500, 286);
+            label2.Location = new System.Drawing.Point(457, 290);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(40, 16);
             label2.TabIndex = 46;
@@ -216,7 +216,7 @@
             // path
             // 
             path.AutoSize = true;
-            path.Location = new System.Drawing.Point(316, 286);
+            path.Location = new System.Drawing.Point(273, 290);
             path.Name = "path";
             path.Size = new System.Drawing.Size(35, 16);
             path.TabIndex = 47;
@@ -224,7 +224,7 @@
             // 
             // importbtn
             // 
-            importbtn.Location = new System.Drawing.Point(605, 267);
+            importbtn.Location = new System.Drawing.Point(550, 271);
             importbtn.Name = "importbtn";
             importbtn.Size = new System.Drawing.Size(111, 25);
             importbtn.TabIndex = 49;
@@ -236,14 +236,14 @@
             // 
             cbsheets.FormattingEnabled = true;
             cbsheets.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" });
-            cbsheets.Location = new System.Drawing.Point(454, 304);
+            cbsheets.Location = new System.Drawing.Point(411, 308);
             cbsheets.Name = "cbsheets";
             cbsheets.Size = new System.Drawing.Size(133, 24);
             cbsheets.TabIndex = 51;
             // 
             // fillfile
             // 
-            fillfile.Location = new System.Drawing.Point(605, 303);
+            fillfile.Location = new System.Drawing.Point(550, 307);
             fillfile.Name = "fillfile";
             fillfile.Size = new System.Drawing.Size(111, 25);
             fillfile.TabIndex = 51;
@@ -253,7 +253,7 @@
             // 
             // connectform
             // 
-            connectform.Location = new System.Drawing.Point(19, 45);
+            connectform.Location = new System.Drawing.Point(14, 45);
             connectform.Name = "connectform";
             connectform.Size = new System.Drawing.Size(111, 25);
             connectform.TabIndex = 52;
@@ -263,7 +263,7 @@
             // 
             // button1
             // 
-            button1.Location = new System.Drawing.Point(722, 267);
+            button1.Location = new System.Drawing.Point(665, 271);
             button1.Name = "button1";
             button1.Size = new System.Drawing.Size(111, 25);
             button1.TabIndex = 53;
@@ -274,7 +274,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(14, 214);
+            label1.Location = new System.Drawing.Point(9, 214);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(120, 16);
             label1.TabIndex = 54;
@@ -282,7 +282,7 @@
             // 
             // textBox1
             // 
-            textBox1.Location = new System.Drawing.Point(14, 99);
+            textBox1.Location = new System.Drawing.Point(9, 99);
             textBox1.Name = "textBox1";
             textBox1.Size = new System.Drawing.Size(120, 23);
             textBox1.TabIndex = 55;
@@ -291,7 +291,7 @@
             // 
             // tbvremestabilizacije
             // 
-            tbvremestabilizacije.Location = new System.Drawing.Point(14, 233);
+            tbvremestabilizacije.Location = new System.Drawing.Point(9, 233);
             tbvremestabilizacije.Name = "tbvremestabilizacije";
             tbvremestabilizacije.Size = new System.Drawing.Size(120, 23);
             tbvremestabilizacije.TabIndex = 56;
@@ -305,7 +305,7 @@
             BackColor = System.Drawing.SystemColors.ActiveCaption;
             BackgroundImage = (System.Drawing.Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            ClientSize = new System.Drawing.Size(845, 354);
+            ClientSize = new System.Drawing.Size(839, 354);
             Controls.Add(tbvremestabilizacije);
             Controls.Add(textBox1);
             Controls.Add(label1);
