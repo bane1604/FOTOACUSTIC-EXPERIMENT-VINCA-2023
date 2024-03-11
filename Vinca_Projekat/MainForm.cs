@@ -401,6 +401,7 @@ namespace Vinca_Projekat
                     int col = 3;
                     double[] dataR = EXPERIMENT_LIB.get_R_data(i);
 
+                    
                     for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
                     {
                         ws.SetCellValue(i + 1, col, dataR[z]);
@@ -416,6 +417,29 @@ namespace Vinca_Projekat
                     }
 
                 }
+
+                //MetaPodaci:
+                ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 2, 0, "Datum i vreme:");
+                ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 2, 1, DateTime.Now.ToString());
+
+                ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 3, 0, "Reserve Mode:");
+                ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 0, "Time constant:");
+                ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 0, "Low Pass:");
+
+                if (SR850_LOCK_IN_DRIVER.is_Connected())
+                {
+                    LockInForm.read();
+                    ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 3, 1, LockInForm.get_reserve_mode());
+                    ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 1, LockInForm.get_time_constant());
+                    ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, LockInForm.get_low_pass());
+                }
+                else
+                {
+                    ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 3, 1, "ERR");
+                    ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 1, "ERR");
+                    ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, "ERR");
+                }
+
                 wb.Save();
 
                 wb.Close();

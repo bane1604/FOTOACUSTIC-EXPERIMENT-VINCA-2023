@@ -51,6 +51,57 @@ namespace Vinca_Projekat
 
         }
 
+        public static string get_time_constant()
+        {
+            switch ( tcb_selected )
+            {
+                case 0: return "10 μs";
+                case 1: return "30 μs";
+                case 2: return "100 μs";
+                case 3: return "300 μs";
+                case 4: return "1 ms";
+                case 5: return "3 ms";
+                case 6: return "10 ms";
+                case 7: return "30 ms";
+                case 8: return "100 ms";
+                case 9: return "300 ms";
+                case 10: return "1 s";
+                case 11: return "3 s";
+                case 12: return "10 s";
+                case 13: return "30 s";
+                case 14: return "100 s";
+                case 15: return "300 s";
+                case 16: return "1 ks";
+                case 17: return "3 ks";
+                case 18: return "10 ks";
+                case 19: return "30 ks";
+                default: return "UNKNOWN";
+            }
+        }
+
+        public static string get_low_pass()
+        {
+            switch (lpcb_selected)
+            {
+                case 0: return "6 db/Oct";
+                case 1: return "12 db/Oct";
+                case 2: return "18 db/Oct";
+                case 3: return "24 db/Oct";
+                default: return "UNKNOWN";
+            }
+        }
+
+        public static string get_reserve_mode()
+        {
+            switch(rmcb_selected)
+            {
+                case 0: return "Max";
+                case 1: return "Manual";
+                case 2: return "Min";
+                default: return "UNKNOWN";
+            }
+        }
+
         private void rmcb_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (SR850_LOCK_IN_DRIVER.is_Connected() == false)

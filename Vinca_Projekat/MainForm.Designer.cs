@@ -305,7 +305,7 @@
             BackColor = System.Drawing.SystemColors.ActiveCaption;
             BackgroundImage = (System.Drawing.Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            ClientSize = new System.Drawing.Size(839, 354);
+            ClientSize = new System.Drawing.Size(790, 354);
             Controls.Add(tbvremestabilizacije);
             Controls.Add(textBox1);
             Controls.Add(label1);

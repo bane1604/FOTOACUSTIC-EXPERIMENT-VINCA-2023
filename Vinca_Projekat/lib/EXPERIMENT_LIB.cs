@@ -25,7 +25,7 @@ namespace Vinca_Projekat.lib
         public static int[] duty =new Int32[102];
 
         public static int brt;
-        public static int br_merenja;
+        public static int br_merenja = 5;
 
         private static List<double>[] Rval =  new List<double>[102];
         private static List<double>[] Tval = new List<double>[102];
@@ -36,15 +36,25 @@ namespace Vinca_Projekat.lib
 
         public static double[] get_R_data( int i )
         {
+            
             List<double> l = Rval[i];
 
-            return l.ToArray();
+            if (l != null)
+            {
+                return l.ToArray();
+            }
+            return new double[0];
+            
         }
         public static double[] get_T_data(int i)
         {
             List<double> l = Tval[i];
 
-            return l.ToArray();
+            if (l != null)
+            {
+                return l.ToArray();
+            }
+            return new double[0];
         }
 
 
