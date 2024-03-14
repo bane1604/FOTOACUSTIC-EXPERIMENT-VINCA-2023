@@ -310,8 +310,7 @@ namespace Vinca_Projekat
 
         private void importbtn_Click(object sender, EventArgs e)
         {
-            IronXL.License.LicenseKey = "IRONSUITE.MIOLJUB.GMAIL.COM.21532-A741AA501B-M3KMN-4BJ37NHO4ASV-JDZKWGB2YJMM-YXHOI7W7B5DD-3MFD33EUBIEX-4DQIL3P64OY5-RB5L4O3XOLFX-XUC7XE-TI7LUU3P77WLUA-DEPLOYMENT.TRIAL-MURWUZ.TRIAL.EXPIRES.15.MAR.2024";
-
+            IronXL.License.LicenseKey = "IRONSUITE.NESICVOJIN2011.GMAIL.COM.23983-EDBED480A9-BLYYZNV-JIUHV7RGXJDN-EFCZSKERCHDY-DRDC5ZGPPU2Y-FTAVFCFMAIQD-CVZGK432PISK-6EUNP4ROFOJC-XN3LCX-TSVYCGZ7COGMEA-DEPLOYMENT.TRIAL-6OKBS7.TRIAL.EXPIRES.13.APR.2024";
             WorkBook wb = WorkBook.Load(pathtofile.Text);
             if (wb == null)
             {
@@ -352,7 +351,7 @@ namespace Vinca_Projekat
                 {
                     openFileDialog1.ShowDialog(this);
                     pathtofile.Text = openFileDialog1.FileName;
-                    IronXL.License.LicenseKey = "IRONSUITE.MIOLJUB.GMAIL.COM.21532-A741AA501B-M3KMN-4BJ37NHO4ASV-JDZKWGB2YJMM-YXHOI7W7B5DD-3MFD33EUBIEX-4DQIL3P64OY5-RB5L4O3XOLFX-XUC7XE-TI7LUU3P77WLUA-DEPLOYMENT.TRIAL-MURWUZ.TRIAL.EXPIRES.15.MAR.2024";
+                    IronXL.License.LicenseKey = "IRONSUITE.NESICVOJIN2011.GMAIL.COM.23983-EDBED480A9-BLYYZNV-JIUHV7RGXJDN-EFCZSKERCHDY-DRDC5ZGPPU2Y-FTAVFCFMAIQD-CVZGK432PISK-6EUNP4ROFOJC-XN3LCX-TSVYCGZ7COGMEA-DEPLOYMENT.TRIAL-6OKBS7.TRIAL.EXPIRES.13.APR.2024";
 
                     WorkBook wb = WorkBook.Load(pathtofile.Text);
                     cbsheets.Items.Clear();
@@ -377,10 +376,11 @@ namespace Vinca_Projekat
 
         private void fillfile_Click(object sender, EventArgs e)
         {
+            WorkBook wb = WorkBook.Load(pathtofile.Text);
             try
             {
                 int n = Convert.ToInt32(textBox1.Text);
-                WorkBook wb = WorkBook.Load(pathtofile.Text);
+                
                 WorkSheet ws = wb.GetWorkSheet(cbsheets.SelectedItem.ToString());
 
                 int cl = 3;
@@ -394,28 +394,47 @@ namespace Vinca_Projekat
                     ws.SetCellValue(0, cl, "T" + z.ToString());
                     cl++;
                 }
-
+                ws.SetCellValue(0, cl, "AverageR[mV]");
+                ws.SetCellValue(0, cl+1, "AverageT[stepeni]");
 
                 for (int i = 0; i < EXPERIMENT_LIB.br_merenja; i++)
                 {
                     int col = 3;
                     double[] dataR = EXPERIMENT_LIB.get_R_data(i);
-
-                    
-                    for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
-                    {
-                        ws.SetCellValue(i + 1, col, dataR[z]);
-                        col++;
-                    }
-
                     double[] dataT = EXPERIMENT_LIB.get_T_data(i);
 
-                    for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
+                    double averageR = 0;
+                    double averageT = 0;
+
+                    for (int z = 0; z < dataR.Length; z++)
                     {
-                        ws.SetCellValue(i + 1, col, dataT[z]);
+                        ws.SetCellValue(i + 1, col, dataR[z]);
+                        averageR += dataR[z];
                         col++;
                     }
 
+                    
+
+                    for (int z = 0; z < dataT.Length; z++)
+                    {
+                        ws.SetCellValue(i + 1, col, dataT[z]);
+                        averageT += dataT[z];
+                        col++;
+                    }
+
+                    if (dataR.Length > 0)
+                    {
+                        averageR /= dataR.Length;
+                        averageR = averageR * 1000;
+                    }
+                    else { averageR = 0; }
+                    if (dataT.Length > 0)
+                    {
+                        averageT /= dataT.Length;
+                    }else { averageT = 0; }
+
+                    ws.SetCellValue(i+1, col, averageR);
+                    ws.SetCellValue(i+1, col+1, averageT);
                 }
 
                 //MetaPodaci:
@@ -428,10 +447,24 @@ namespace Vinca_Projekat
 
                 if (SR850_LOCK_IN_DRIVER.is_Connected())
                 {
-                    LockInForm.read();
-                    ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 3, 1, LockInForm.get_reserve_mode());
-                    ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 1, LockInForm.get_time_constant());
-                    ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, LockInForm.get_low_pass());
+                    try
+                    {
+                        LockInForm.read();
+                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 3, 1, LockInForm.get_reserve_mode());
+                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 1, LockInForm.get_time_constant());
+                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, LockInForm.get_low_pass());
+                    }
+                    catch(IOException ex) {
+                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 3, 1, "ERR");
+                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 1, "ERR");
+                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, "ERR");
+                    }
+                    catch (Exception ex)
+                    {
+                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 3, 1, "ERR");
+                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 1, "ERR");
+                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, "ERR");
+                    }
                 }
                 else
                 {
@@ -440,13 +473,16 @@ namespace Vinca_Projekat
                     ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, "ERR");
                 }
 
-                wb.Save();
-
-                wb.Close();
-                PrintInfo.ShowMessage("Podaci su upisani!");
+                
             }
             catch (Exception es)
             { MessageBox.Show(es.ToString()); }
+            finally
+            {
+                wb.Save();
+                wb.Close();
+                PrintInfo.ShowMessage("Podaci su upisani!");
+            }
         }
 
         private void connectform_Click(object sender, EventArgs e)

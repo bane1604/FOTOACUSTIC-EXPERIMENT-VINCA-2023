@@ -60,6 +60,8 @@ namespace Vinca_Projekat.lib
                     lckin.Open();
                     lckin.DiscardInBuffer();
                     lckin.DiscardOutBuffer();
+                    lckin.ReadTimeout = 1000;
+                    
                     _connected = true;
 
                     return true;
@@ -98,6 +100,7 @@ namespace Vinca_Projekat.lib
         {
             return (Byte)lckin.ReadByte();
         }
+        
 
         public static void send_command(String command)
         {

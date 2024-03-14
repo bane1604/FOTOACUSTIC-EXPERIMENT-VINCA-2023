@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using Windows.UI.Composition;
 
 namespace Vinca_Projekat.lib
 {
@@ -99,15 +100,20 @@ namespace Vinca_Projekat.lib
                 for (int i = 0; i < n; i++)
                 {
                     if (repeat) i--;
+                    try { 
                     repeat = false;
                     curi = i;
                     //start the thread for laser
                     SR850_LOCK_IN_DRIVER.send_command("REST");
                     Console.WriteLine("Pokretanje lasera");
                     t = new Thread(() => Serial_Driver_Laser.laser_start(snaga[i], frekv[i], 100000, duty[i]));
+                    Console.WriteLine("Snaga lasera = " + snaga[i].ToString());
+                    Console.WriteLine("Frekv lasera = " + frekv[i].ToString());
+                    Console.WriteLine("Duty lasera = " + duty[i].ToString());
+
                     t.Start();
                     Console.WriteLine("Cekanje za stabilizaciju" + vreme_stabilizacije + "s");
-                    Thread.Sleep(vreme_stabilizacije*1000);
+                    Thread.Sleep(vreme_stabilizacije * 1000);
 
 
                     Console.WriteLine("Zapocinjanje merenja!");
@@ -145,14 +151,14 @@ namespace Vinca_Projekat.lib
                             Byte exp = SR850_LOCK_IN_DRIVER.read_byte();
                             Byte zero = SR850_LOCK_IN_DRIVER.read_byte();
 
-                            int z1= m1;
+                            int z1 = m1;
                             z1 = z1 << 8;
                             uint z2 = m2;
-                            
-                            int mantisa = (int) ((uint) z1 + z2 );
-                            
-                            
-                            double broj = Math.Pow(2, (int)exp-124) * mantisa;
+
+                            int mantisa = (int)((uint)z1 + z2);
+
+
+                            double broj = Math.Pow(2, (int)exp - 124) * mantisa;
                             if (Rval[i].Count != 0 && (Math.Abs(broj) < Math.Abs(Rval[i].Last()) / 1000 || Math.Abs(broj) > 1000 * Math.Abs(Rval[i].Last()))) {
                                 j--;
                             }
@@ -174,7 +180,7 @@ namespace Vinca_Projekat.lib
                     int izT = 0;
                     while (flaglosa)
                     {
-                        
+
                         flaglosa = false;
                         SR850_LOCK_IN_DRIVER.flushin();
                         Console.WriteLine("Broj izmerenih tacaka (T) je: ");
@@ -185,11 +191,11 @@ namespace Vinca_Projekat.lib
                         {
                             izT = Convert.ToInt32(izmerenoT);
                         }
-                        catch( Exception e) {
+                        catch (Exception e) {
                             flaglosa = true;
                         }
                     }
-                        if (izT >= broj_tacaka)
+                    if (izT >= broj_tacaka)
                     {
                         Tval[i] = new List<double>();
                         for (int j = 0; j < broj_tacaka; j++)
@@ -213,8 +219,8 @@ namespace Vinca_Projekat.lib
                                 z1 = m1 << 8;
                                 z1 = -z1;
                             }
-                            
-                            int mantisa = (int) (Math.Abs(z1) + Math.Abs(z2)) ;
+
+                            int mantisa = (int)(Math.Abs(z1) + Math.Abs(z2));
                             if (z1 < 0)
                                 mantisa = -mantisa;
                             double broj = Math.Pow(2, (int)exp - 124) * mantisa;
@@ -243,7 +249,20 @@ namespace Vinca_Projekat.lib
                         t.Interrupt();
                     }
                     t.Join();
-
+                    }
+                    catch(TimeoutException ex)
+                    {
+                        Console.WriteLine("LockIn se nije odazvao u predvidjenom periodu.");
+                        Console.Out.WriteLine("gasenje lasera");
+                        if (t != null && t.IsAlive)
+                        {
+                            t.Interrupt();
+                        }
+                        t.Join();
+                        repeat = true;
+                        SR850_LOCK_IN_DRIVER.send_command("REST");
+                        Thread.Sleep(50);
+                    }
                 }
                 PrintInfo.ShowMessage("Merenje je zavrseno!");
             }
