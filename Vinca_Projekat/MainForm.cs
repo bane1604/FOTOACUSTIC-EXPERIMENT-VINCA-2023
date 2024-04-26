@@ -34,7 +34,8 @@ namespace Vinca_Projekat
         public MainForm()
         {
             InitializeComponent();
-            cbsamplerate.SelectedIndex = 5;
+            cbsamplerate.SelectedIndex = 3;
+
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -310,7 +311,7 @@ namespace Vinca_Projekat
 
         private void importbtn_Click(object sender, EventArgs e)
         {
-            IronXL.License.LicenseKey = "IRONSUITE.NESICVOJIN2011.GMAIL.COM.23983-EDBED480A9-BLYYZNV-JIUHV7RGXJDN-EFCZSKERCHDY-DRDC5ZGPPU2Y-FTAVFCFMAIQD-CVZGK432PISK-6EUNP4ROFOJC-XN3LCX-TSVYCGZ7COGMEA-DEPLOYMENT.TRIAL-6OKBS7.TRIAL.EXPIRES.13.APR.2024";
+            //IronXL.License.LicenseKey = "IRONSUITE.NESICVOJIN2011.GMAIL.COM.23983-EDBED480A9-BLYYZNV-JIUHV7RGXJDN-EFCZSKERCHDY-DRDC5ZGPPU2Y-FTAVFCFMAIQD-CVZGK432PISK-6EUNP4ROFOJC-XN3LCX-TSVYCGZ7COGMEA-DEPLOYMENT.TRIAL-6OKBS7.TRIAL.EXPIRES.13.APR.2024";
             WorkBook wb = WorkBook.Load(pathtofile.Text);
             if (wb == null)
             {
@@ -351,7 +352,7 @@ namespace Vinca_Projekat
                 {
                     openFileDialog1.ShowDialog(this);
                     pathtofile.Text = openFileDialog1.FileName;
-                    IronXL.License.LicenseKey = "IRONSUITE.NESICVOJIN2011.GMAIL.COM.23983-EDBED480A9-BLYYZNV-JIUHV7RGXJDN-EFCZSKERCHDY-DRDC5ZGPPU2Y-FTAVFCFMAIQD-CVZGK432PISK-6EUNP4ROFOJC-XN3LCX-TSVYCGZ7COGMEA-DEPLOYMENT.TRIAL-6OKBS7.TRIAL.EXPIRES.13.APR.2024";
+                    //IronXL.License.LicenseKey = "IRONSUITE.NESICVOJIN2011.GMAIL.COM.23983-EDBED480A9-BLYYZNV-JIUHV7RGXJDN-EFCZSKERCHDY-DRDC5ZGPPU2Y-FTAVFCFMAIQD-CVZGK432PISK-6EUNP4ROFOJC-XN3LCX-TSVYCGZ7COGMEA-DEPLOYMENT.TRIAL-6OKBS7.TRIAL.EXPIRES.13.APR.2024";
 
                     WorkBook wb = WorkBook.Load(pathtofile.Text);
                     cbsheets.Items.Clear();
@@ -380,7 +381,7 @@ namespace Vinca_Projekat
             try
             {
                 int n = Convert.ToInt32(textBox1.Text);
-                
+
                 WorkSheet ws = wb.GetWorkSheet(cbsheets.SelectedItem.ToString());
 
                 int cl = 3;
@@ -395,7 +396,7 @@ namespace Vinca_Projekat
                     cl++;
                 }
                 ws.SetCellValue(0, cl, "AverageR[mV]");
-                ws.SetCellValue(0, cl+1, "AverageT[stepeni]");
+                ws.SetCellValue(0, cl + 1, "AverageT[stepeni]");
 
                 for (int i = 0; i < EXPERIMENT_LIB.br_merenja; i++)
                 {
@@ -413,7 +414,7 @@ namespace Vinca_Projekat
                         col++;
                     }
 
-                    
+
 
                     for (int z = 0; z < dataT.Length; z++)
                     {
@@ -431,10 +432,11 @@ namespace Vinca_Projekat
                     if (dataT.Length > 0)
                     {
                         averageT /= dataT.Length;
-                    }else { averageT = 0; }
+                    }
+                    else { averageT = 0; }
 
-                    ws.SetCellValue(i+1, col, averageR);
-                    ws.SetCellValue(i+1, col+1, averageT);
+                    ws.SetCellValue(i + 1, col, averageR);
+                    ws.SetCellValue(i + 1, col + 1, averageT);
                 }
 
                 //MetaPodaci:
@@ -454,7 +456,8 @@ namespace Vinca_Projekat
                         ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 1, LockInForm.get_time_constant());
                         ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, LockInForm.get_low_pass());
                     }
-                    catch(IOException ex) {
+                    catch (IOException ex)
+                    {
                         ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 3, 1, "ERR");
                         ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 1, "ERR");
                         ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, "ERR");
@@ -473,7 +476,7 @@ namespace Vinca_Projekat
                     ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, "ERR");
                 }
 
-                
+
             }
             catch (Exception es)
             { MessageBox.Show(es.ToString()); }
@@ -672,6 +675,132 @@ namespace Vinca_Projekat
             }
             expt = new Thread(() => multiple_run(par0, par1, par2, par3, par4));
             expt.Start();
+        }
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            using (PrintInfo pf = new PrintInfo(IronXL.License.LicenseKey))
+            {
+                this.Visible = false;
+                pf.ShowDialog();
+                this.Visible = true;
+            }
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!File.Exists("./lic.txt"))
+                {
+                    PrintInfo.ShowMessage("Nemate lic.txt fajl.");
+                    return;
+
+                }
+
+                StreamReader sr = new StreamReader("./lic.txt");
+
+                IronXL.License.LicenseKey = sr.ReadLine();
+                Console.WriteLine(IronXL.License.LicenseKey);
+            }
+            catch (Exception er)
+            {
+
+
+            }
+            cbsamplerate.SelectedIndex = 0;
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            String path = "./export.csv";
+            try
+            {
+                using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
+                {
+                    openFileDialog1.ShowDialog(this);
+                    path = openFileDialog1.FileName;
+                }
+            }
+            catch (FileNotFoundException ffe)
+            {
+                PrintInfo.ShowMessage("Fajl nije odabran.");
+            }
+            catch
+            {
+                PrintInfo.ShowMessage("Nije moguce otvoriti fajl.");
+            }
+
+            var csv = new StringBuilder();
+
+            int cl = 3;
+            StringBuilder sb = new StringBuilder();
+            for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
+            {
+                if (z != 0)
+                    sb.Append(",R" + z.ToString());
+                else
+                    sb.Append("R" + z.ToString());
+                cl++;
+            }
+            for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
+            {
+                sb.Append(",T" + z.ToString());
+                cl++;
+            }
+
+            sb.Append(",AverageR[mV],AverageT[stepeni]");
+            csv.AppendLine(sb.ToString());
+
+
+            for (int i = 0; i < EXPERIMENT_LIB.br_merenja; i++)
+            {
+                sb.Clear();
+                int col = 3;
+                double[] dataR = EXPERIMENT_LIB.get_R_data(i);
+                double[] dataT = EXPERIMENT_LIB.get_T_data(i);
+
+                double averageR = 0;
+                double averageT = 0;
+
+                for (int z = 0; z < dataR.Length; z++)
+                {
+                    if (z == 0)
+                        sb.Append(dataR[z].ToString());
+                    else
+                        sb.Append("," + dataR[z].ToString());
+                    Console.WriteLine(dataR[z].ToString());
+                    col++;
+                }
+
+
+
+                for (int z = 0; z < dataT.Length; z++)
+                {
+                    sb.Append("," + dataT[z].ToString());
+                    averageT += dataT[z];
+                    Console.WriteLine(dataT[z].ToString());
+                    col++;
+                }
+
+                if (dataR.Length > 0)
+                {
+                    averageR /= dataR.Length;
+                    averageR = averageR * 1000;
+                }
+                else { averageR = 0; }
+                if (dataT.Length > 0)
+                {
+                    averageT /= dataT.Length;
+                }
+                else { averageT = 0; }
+
+                sb.Append("," + averageR.ToString());
+                sb.Append(',' + averageT.ToString());
+                csv.AppendLine(sb.ToString());
+            }
+            File.WriteAllText(path, csv.ToString());
+            PrintInfo.ShowMessage("Podaci uspesno upisani u csv.");
         }
     }
 }

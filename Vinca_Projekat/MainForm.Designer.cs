@@ -56,6 +56,8 @@
             label1 = new System.Windows.Forms.Label();
             textBox1 = new System.Windows.Forms.TextBox();
             tbvremestabilizacije = new System.Windows.Forms.TextBox();
+            linkLabel2 = new System.Windows.Forms.LinkLabel();
+            button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)datagrid).BeginInit();
             SuspendLayout();
@@ -67,7 +69,7 @@
             linkLabel1.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             linkLabel1.LinkColor = System.Drawing.Color.Black;
-            linkLabel1.Location = new System.Drawing.Point(753, 9);
+            linkLabel1.Location = new System.Drawing.Point(753, 8);
             linkLabel1.Name = "linkLabel1";
             linkLabel1.Size = new System.Drawing.Size(23, 25);
             linkLabel1.TabIndex = 0;
@@ -85,9 +87,9 @@
             // brmerenjalabel
             // 
             brmerenjalabel.AutoSize = true;
-            brmerenjalabel.Location = new System.Drawing.Point(25, 79);
+            brmerenjalabel.Location = new System.Drawing.Point(25, 74);
             brmerenjalabel.Name = "brmerenjalabel";
-            brmerenjalabel.Size = new System.Drawing.Size(88, 16);
+            brmerenjalabel.Size = new System.Drawing.Size(88, 15);
             brmerenjalabel.TabIndex = 33;
             brmerenjalabel.Text = "BROJ MERENJA";
             // 
@@ -95,17 +97,17 @@
             // 
             cbsamplerate.FormattingEnabled = true;
             cbsamplerate.Items.AddRange(new object[] { "1", "2", "4", "8", "16", "32", "64", "128", "256", "512" });
-            cbsamplerate.Location = new System.Drawing.Point(9, 187);
+            cbsamplerate.Location = new System.Drawing.Point(9, 175);
             cbsamplerate.Name = "cbsamplerate";
-            cbsamplerate.Size = new System.Drawing.Size(121, 24);
+            cbsamplerate.Size = new System.Drawing.Size(121, 23);
             cbsamplerate.TabIndex = 34;
             // 
             // labelsamplerate
             // 
             labelsamplerate.AutoSize = true;
-            labelsamplerate.Location = new System.Drawing.Point(29, 168);
+            labelsamplerate.Location = new System.Drawing.Point(29, 158);
             labelsamplerate.Name = "labelsamplerate";
-            labelsamplerate.Size = new System.Drawing.Size(80, 16);
+            labelsamplerate.Size = new System.Drawing.Size(80, 15);
             labelsamplerate.TabIndex = 35;
             labelsamplerate.Text = "SAMPLE RATE";
             // 
@@ -116,13 +118,13 @@
             datagrid.BackgroundColor = System.Drawing.Color.FromArgb(73, 70, 135);
             datagrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             datagrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Snaga, Frekvencija, Duty });
-            datagrid.Location = new System.Drawing.Point(155, 45);
+            datagrid.Location = new System.Drawing.Point(155, 42);
             datagrid.Name = "datagrid";
             datagrid.RowHeadersVisible = false;
             datagrid.RowHeadersWidth = 200;
             datagrid.RowTemplate.Height = 25;
             datagrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            datagrid.Size = new System.Drawing.Size(621, 215);
+            datagrid.Size = new System.Drawing.Size(621, 202);
             datagrid.TabIndex = 36;
             // 
             // Snaga
@@ -149,15 +151,15 @@
             // vremeakvlabel
             // 
             vremeakvlabel.AutoSize = true;
-            vremeakvlabel.Location = new System.Drawing.Point(20, 125);
+            vremeakvlabel.Location = new System.Drawing.Point(20, 117);
             vremeakvlabel.Name = "vremeakvlabel";
-            vremeakvlabel.Size = new System.Drawing.Size(98, 16);
+            vremeakvlabel.Size = new System.Drawing.Size(98, 15);
             vremeakvlabel.TabIndex = 37;
             vremeakvlabel.Text = "VREME MERENJA";
             // 
             // tbvrememerenja
             // 
-            tbvrememerenja.Location = new System.Drawing.Point(9, 143);
+            tbvrememerenja.Location = new System.Drawing.Point(9, 134);
             tbvrememerenja.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             tbvrememerenja.Name = "tbvrememerenja";
             tbvrememerenja.Size = new System.Drawing.Size(121, 23);
@@ -167,10 +169,10 @@
             // 
             // button4
             // 
-            button4.Location = new System.Drawing.Point(20, 277);
+            button4.Location = new System.Drawing.Point(20, 260);
             button4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             button4.Name = "button4";
-            button4.Size = new System.Drawing.Size(111, 25);
+            button4.Size = new System.Drawing.Size(111, 23);
             button4.TabIndex = 41;
             button4.Text = "STARTEXP";
             button4.UseVisualStyleBackColor = true;
@@ -178,10 +180,10 @@
             // 
             // button6
             // 
-            button6.Location = new System.Drawing.Point(19, 305);
+            button6.Location = new System.Drawing.Point(19, 286);
             button6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             button6.Name = "button6";
-            button6.Size = new System.Drawing.Size(111, 25);
+            button6.Size = new System.Drawing.Size(111, 23);
             button6.TabIndex = 42;
             button6.Text = "STOPEXP";
             button6.UseVisualStyleBackColor = true;
@@ -189,16 +191,16 @@
             // 
             // pathtofile
             // 
-            pathtofile.Location = new System.Drawing.Point(155, 310);
+            pathtofile.Location = new System.Drawing.Point(155, 291);
             pathtofile.Name = "pathtofile";
             pathtofile.Size = new System.Drawing.Size(133, 23);
             pathtofile.TabIndex = 43;
             // 
             // selectfile
             // 
-            selectfile.Location = new System.Drawing.Point(294, 309);
+            selectfile.Location = new System.Drawing.Point(294, 290);
             selectfile.Name = "selectfile";
-            selectfile.Size = new System.Drawing.Size(111, 25);
+            selectfile.Size = new System.Drawing.Size(111, 23);
             selectfile.TabIndex = 44;
             selectfile.Text = "SELECT";
             selectfile.UseVisualStyleBackColor = true;
@@ -207,26 +209,26 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(457, 290);
+            label2.Location = new System.Drawing.Point(457, 272);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(40, 16);
+            label2.Size = new System.Drawing.Size(40, 15);
             label2.TabIndex = 46;
             label2.Text = "SHEET";
             // 
             // path
             // 
             path.AutoSize = true;
-            path.Location = new System.Drawing.Point(273, 290);
+            path.Location = new System.Drawing.Point(273, 272);
             path.Name = "path";
-            path.Size = new System.Drawing.Size(35, 16);
+            path.Size = new System.Drawing.Size(35, 15);
             path.TabIndex = 47;
             path.Text = "PATH";
             // 
             // importbtn
             // 
-            importbtn.Location = new System.Drawing.Point(550, 271);
+            importbtn.Location = new System.Drawing.Point(550, 254);
             importbtn.Name = "importbtn";
-            importbtn.Size = new System.Drawing.Size(111, 25);
+            importbtn.Size = new System.Drawing.Size(111, 23);
             importbtn.TabIndex = 49;
             importbtn.Text = "IMPORT";
             importbtn.UseVisualStyleBackColor = true;
@@ -236,16 +238,16 @@
             // 
             cbsheets.FormattingEnabled = true;
             cbsheets.Items.AddRange(new object[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" });
-            cbsheets.Location = new System.Drawing.Point(411, 308);
+            cbsheets.Location = new System.Drawing.Point(411, 289);
             cbsheets.Name = "cbsheets";
-            cbsheets.Size = new System.Drawing.Size(133, 24);
+            cbsheets.Size = new System.Drawing.Size(133, 23);
             cbsheets.TabIndex = 51;
             // 
             // fillfile
             // 
-            fillfile.Location = new System.Drawing.Point(550, 307);
+            fillfile.Location = new System.Drawing.Point(550, 288);
             fillfile.Name = "fillfile";
-            fillfile.Size = new System.Drawing.Size(111, 25);
+            fillfile.Size = new System.Drawing.Size(111, 23);
             fillfile.TabIndex = 51;
             fillfile.Text = "FILL";
             fillfile.UseVisualStyleBackColor = true;
@@ -253,9 +255,9 @@
             // 
             // connectform
             // 
-            connectform.Location = new System.Drawing.Point(14, 45);
+            connectform.Location = new System.Drawing.Point(14, 42);
             connectform.Name = "connectform";
-            connectform.Size = new System.Drawing.Size(111, 25);
+            connectform.Size = new System.Drawing.Size(111, 23);
             connectform.TabIndex = 52;
             connectform.Text = "Connect";
             connectform.UseVisualStyleBackColor = true;
@@ -263,9 +265,9 @@
             // 
             // button1
             // 
-            button1.Location = new System.Drawing.Point(665, 271);
+            button1.Location = new System.Drawing.Point(665, 254);
             button1.Name = "button1";
-            button1.Size = new System.Drawing.Size(111, 25);
+            button1.Size = new System.Drawing.Size(111, 23);
             button1.TabIndex = 53;
             button1.Text = "SR850";
             button1.UseVisualStyleBackColor = true;
@@ -274,15 +276,15 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(9, 214);
+            label1.Location = new System.Drawing.Point(9, 201);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(120, 16);
+            label1.Size = new System.Drawing.Size(121, 15);
             label1.TabIndex = 54;
             label1.Text = "VREME STABILIZACIJE";
             // 
             // textBox1
             // 
-            textBox1.Location = new System.Drawing.Point(9, 99);
+            textBox1.Location = new System.Drawing.Point(9, 93);
             textBox1.Name = "textBox1";
             textBox1.Size = new System.Drawing.Size(120, 23);
             textBox1.TabIndex = 55;
@@ -291,21 +293,44 @@
             // 
             // tbvremestabilizacije
             // 
-            tbvremestabilizacije.Location = new System.Drawing.Point(9, 233);
+            tbvremestabilizacije.Location = new System.Drawing.Point(9, 218);
             tbvremestabilizacije.Name = "tbvremestabilizacije";
             tbvremestabilizacije.Size = new System.Drawing.Size(120, 23);
             tbvremestabilizacije.TabIndex = 56;
-            tbvremestabilizacije.Text = "20";
+            tbvremestabilizacije.Text = "10";
             tbvremestabilizacije.TextChanged += tbvremestabilizacije_TextChanged;
+            // 
+            // linkLabel2
+            // 
+            linkLabel2.AutoSize = true;
+            linkLabel2.Location = new System.Drawing.Point(175, 16);
+            linkLabel2.Name = "linkLabel2";
+            linkLabel2.Size = new System.Drawing.Size(47, 15);
+            linkLabel2.TabIndex = 57;
+            linkLabel2.TabStop = true;
+            linkLabel2.Text = "Licenca";
+            linkLabel2.LinkClicked += linkLabel2_LinkClicked;
+            // 
+            // button2
+            // 
+            button2.Location = new System.Drawing.Point(665, 286);
+            button2.Name = "button2";
+            button2.Size = new System.Drawing.Size(111, 23);
+            button2.TabIndex = 58;
+            button2.Text = "FILL_CSV";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click_1;
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.SystemColors.ActiveCaption;
             BackgroundImage = (System.Drawing.Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            ClientSize = new System.Drawing.Size(790, 354);
+            ClientSize = new System.Drawing.Size(790, 332);
+            Controls.Add(button2);
+            Controls.Add(linkLabel2);
             Controls.Add(tbvremestabilizacije);
             Controls.Add(textBox1);
             Controls.Add(label1);
@@ -333,6 +358,7 @@
             Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             Name = "MainForm";
             Text = "FOTO_AKUSTIKA";
+            Load += MainForm_Load;
             MouseDown += Form1_MouseDown;
             ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
             ((System.ComponentModel.ISupportInitialize)datagrid).EndInit();
@@ -369,5 +395,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox tbvremestabilizacije;
+        private System.Windows.Forms.LinkLabel linkLabel2;
+        private System.Windows.Forms.Button button2;
     }
 }
