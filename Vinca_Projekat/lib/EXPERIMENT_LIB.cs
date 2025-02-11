@@ -35,6 +35,22 @@ namespace Vinca_Projekat.lib
 
         private static int curi = 0;
 
+        public static void setupTest()
+        {
+            br_merenja = 5;
+            brt = 51;
+            for (int i = 0; i < 5; i++)
+            {
+                Rval[i] = new List<double>();
+                Tval[i] = new List<double>();
+                for( int j = 0; j < 51; j++)
+                {
+                    Rval[i].Add( j % 3 + 1 );
+                    Tval[i].Add( j % 3 + 1 );
+                }
+            }
+        }
+
         public static double[] get_R_data( int i )
         {
             

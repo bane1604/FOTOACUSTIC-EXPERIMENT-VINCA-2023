@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows10.0.22621.0</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>laser.ico</ApplicationIcon>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <UseWPF>True</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IronXL.Excel" Version="2023.10.8" />
+    <PackageReference Include="ClosedXML" Version="0.104.2" />
     <PackageReference Include="ScottPlot" Version="4.1.68" />
     <PackageReference Include="ScottPlot.WinForms" Version="4.1.68" />
     <PackageReference Include="System.IO.Ports" Version="7.0.0" />
@@ -32,6 +34,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
   </ItemGroup>
 
 </Project>

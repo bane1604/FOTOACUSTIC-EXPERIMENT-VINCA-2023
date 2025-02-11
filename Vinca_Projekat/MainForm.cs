@@ -11,9 +11,12 @@ using System.IO.Ports;
 using System.Threading;
 using Vinca_Projekat.lib;
 using System.Runtime.InteropServices;
-using IronXL;
 using System.IO;
+using ClosedXML.Excel;
 using System.Runtime.InteropServices;
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
+using System.Numerics;
 
 namespace Vinca_Projekat
 {
@@ -34,8 +37,10 @@ namespace Vinca_Projekat
         public MainForm()
         {
             InitializeComponent();
-            cbsamplerate.SelectedIndex = 3;
-
+            for (int i = 0; i < 5; i++)
+            {
+                datagrid.Rows.Add();
+            }
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -96,6 +101,8 @@ namespace Vinca_Projekat
         {
             return 10000;
         }
+
+
 
 
         private void data_callbackT(object sender, EventArgs e)
@@ -309,29 +316,64 @@ namespace Vinca_Projekat
             expt.Interrupt();
         }
 
-        private void importbtn_Click(object sender, EventArgs e)
+
+        public void setupTest()
         {
-            //IronXL.License.LicenseKey = "IRONSUITE.NESICVOJIN2011.GMAIL.COM.23983-EDBED480A9-BLYYZNV-JIUHV7RGXJDN-EFCZSKERCHDY-DRDC5ZGPPU2Y-FTAVFCFMAIQD-CVZGK432PISK-6EUNP4ROFOJC-XN3LCX-TSVYCGZ7COGMEA-DEPLOYMENT.TRIAL-6OKBS7.TRIAL.EXPIRES.13.APR.2024";
-            WorkBook wb = WorkBook.Load(pathtofile.Text);
+            pathtofile.Text = "TestniXLSX.xlsx";
+            textBox1.Text = "5";
+            datagrid.Rows.Clear();
+            for( int i = 0; i < 5; i++ )
+                datagrid.Rows.Add();
+
+            cbsheets.Items.Clear();
+            cbsheets.Items.Add("Test");
+            cbsheets.SelectedIndex = 0;
+            EXPERIMENT_LIB.setupTest();
+        }
+
+        public List<int> readData()
+        {
+            List<int> retval = new List<int>();
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    retval.Add(int.Parse((string)datagrid.Rows[i].Cells[j].Value));
+                }
+            }
+            return retval; 
+        }
+
+        public void ImportExperimentData( )
+        {
+            var wb = new XLWorkbook(pathtofile.Text);
             if (wb == null)
             {
-                PrintInfo.ShowMessage("Fajl nije pronadjen");
+                PrintInfo.ShowMessage("File nije pronadjen.");
                 return;
             }
 
-            WorkSheet ws = wb.GetWorkSheet(cbsheets.Text);
+            IXLWorksheet ws;
+            try
+            {
+                ws = wb.Worksheet(cbsheets.Text);
+            }
+            catch (Exception ex)
+            {
+                wb.Dispose();
+                PrintInfo.ShowMessage("Worksheet nije pronadnjen.");
+                return;
+            }
 
             int n = Int32.Parse(textBox1.Text) + 1;
 
-
-            if (ws == null) { wb.Close(); return; }
-            var range = ws["A2:C" + n.ToString()];
+            var range = ws.Range($"A2:C{n}");
 
             int i = 0;
             int j = 0;
-            foreach (var cell in range)
+            foreach (var cell in range.Cells())
             {
-                datagrid.Rows[i].Cells[j].Value = cell.ToString();
+                datagrid.Rows[i].Cells[j].Value = cell.Value.ToString();
                 j++;
                 if (j == 3)
                 {
@@ -340,8 +382,13 @@ namespace Vinca_Projekat
                 }
 
             }
-            wb.Close();
+            wb.Dispose();
+        }
 
+        private void importbtn_Click(object sender, EventArgs e)
+        {
+            //IronXL.License.LicenseKey = "IRONSUITE.NESICVOJIN2011.GMAIL.COM.23983-EDBED480A9-BLYYZNV-JIUHV7RGXJDN-EFCZSKERCHDY-DRDC5ZGPPU2Y-FTAVFCFMAIQD-CVZGK432PISK-6EUNP4ROFOJC-XN3LCX-TSVYCGZ7COGMEA-DEPLOYMENT.TRIAL-6OKBS7.TRIAL.EXPIRES.13.APR.2024";
+            ImportExperimentData();
         }
 
         private void selectfile_Click(object sender, EventArgs e)
@@ -354,15 +401,15 @@ namespace Vinca_Projekat
                     pathtofile.Text = openFileDialog1.FileName;
                     //IronXL.License.LicenseKey = "IRONSUITE.NESICVOJIN2011.GMAIL.COM.23983-EDBED480A9-BLYYZNV-JIUHV7RGXJDN-EFCZSKERCHDY-DRDC5ZGPPU2Y-FTAVFCFMAIQD-CVZGK432PISK-6EUNP4ROFOJC-XN3LCX-TSVYCGZ7COGMEA-DEPLOYMENT.TRIAL-6OKBS7.TRIAL.EXPIRES.13.APR.2024";
 
-                    WorkBook wb = WorkBook.Load(pathtofile.Text);
+                    var wb = new XLWorkbook(pathtofile.Text);
                     cbsheets.Items.Clear();
-                    foreach (var ws in wb.WorkSheets)
+                    foreach (var ws in wb.Worksheets)
                     {
 
                         cbsheets.Items.Add(ws.Name);
 
                     }
-                    wb.Close();
+                    wb.Dispose();
                 }
             }
             catch (FileNotFoundException ffe)
@@ -375,28 +422,36 @@ namespace Vinca_Projekat
             }
         }
 
-        private void fillfile_Click(object sender, EventArgs e)
+
+        public void FillData()
         {
-            WorkBook wb = WorkBook.Load(pathtofile.Text);
+            var wb = new XLWorkbook(pathtofile.Text);
             try
             {
+
+
+                var ws = wb.Worksheet(cbsheets.SelectedItem.ToString());
+                if (ws == null)
+                {
+                    PrintInfo.ShowMessage("Worksheet nije pronadjen!");
+                    return;
+                }
+
                 int n = Convert.ToInt32(textBox1.Text);
-
-                WorkSheet ws = wb.GetWorkSheet(cbsheets.SelectedItem.ToString());
-
                 int cl = 3;
                 for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
                 {
-                    ws.SetCellValue(0, cl, "R" + z.ToString());
+                    ws.Cell(1, cl).Value = "R" + z.ToString();
                     cl++;
                 }
                 for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
                 {
-                    ws.SetCellValue(0, cl, "T" + z.ToString());
+                    ws.Cell(1, cl).Value = "T" + z.ToString();
                     cl++;
                 }
-                ws.SetCellValue(0, cl, "AverageR[mV]");
-                ws.SetCellValue(0, cl + 1, "AverageT[stepeni]");
+                ws.Cell(1, cl).Value = "AverageR[mV]";
+                ws.Cell(1, cl + 1).Value = "AverageT[stepeni]";
+
 
                 for (int i = 0; i < EXPERIMENT_LIB.br_merenja; i++)
                 {
@@ -409,7 +464,7 @@ namespace Vinca_Projekat
 
                     for (int z = 0; z < dataR.Length; z++)
                     {
-                        ws.SetCellValue(i + 1, col, dataR[z]);
+                        ws.Cell(i + 2, col).Value = dataR[z];
                         averageR += dataR[z];
                         col++;
                     }
@@ -418,7 +473,7 @@ namespace Vinca_Projekat
 
                     for (int z = 0; z < dataT.Length; z++)
                     {
-                        ws.SetCellValue(i + 1, col, dataT[z]);
+                        ws.Cell(i + 2, col).Value = dataT[z];
                         averageT += dataT[z];
                         col++;
                     }
@@ -435,57 +490,60 @@ namespace Vinca_Projekat
                     }
                     else { averageT = 0; }
 
-                    ws.SetCellValue(i + 1, col, averageR);
-                    ws.SetCellValue(i + 1, col + 1, averageT);
+                    ws.Cell(i + 2, col).Value = averageR;
+                    ws.Cell(i + 2, col + 1).Value = averageT;
                 }
 
-                //MetaPodaci:
-                ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 2, 0, "Datum i vreme:");
-                ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 2, 1, DateTime.Now.ToString());
-
-                ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 3, 0, "Reserve Mode:");
-                ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 0, "Time constant:");
-                ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 0, "Low Pass:");
+                // Metadata
+                ws.Cell(EXPERIMENT_LIB.br_merenja + 3, 1).Value = "Datum i vreme:";
+                ws.Cell(EXPERIMENT_LIB.br_merenja + 3, 2).Value = DateTime.Now.ToString();
+                ws.Cell(EXPERIMENT_LIB.br_merenja + 4, 1).Value = "Reserve Mode:";
+                ws.Cell(EXPERIMENT_LIB.br_merenja + 5, 1).Value = "Time constant:";
+                ws.Cell(EXPERIMENT_LIB.br_merenja + 6, 1).Value = "Low Pass:";
 
                 if (SR850_LOCK_IN_DRIVER.is_Connected())
                 {
                     try
                     {
                         LockInForm.read();
-                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 3, 1, LockInForm.get_reserve_mode());
-                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 1, LockInForm.get_time_constant());
-                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, LockInForm.get_low_pass());
+                        ws.Cell(EXPERIMENT_LIB.br_merenja + 4, 2).Value = LockInForm.get_reserve_mode();
+                        ws.Cell(EXPERIMENT_LIB.br_merenja + 5, 2).Value = LockInForm.get_time_constant();
+                        ws.Cell(EXPERIMENT_LIB.br_merenja + 6, 2).Value = LockInForm.get_low_pass();
                     }
                     catch (IOException ex)
                     {
-                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 3, 1, "ERR");
-                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 1, "ERR");
-                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, "ERR");
+                        ws.Cell(EXPERIMENT_LIB.br_merenja + 4, 2).Value = "ERR";
+                        ws.Cell(EXPERIMENT_LIB.br_merenja + 5, 2).Value = "ERR";
+                        ws.Cell(EXPERIMENT_LIB.br_merenja + 6, 2).Value = "ERR";
                     }
                     catch (Exception ex)
                     {
-                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 3, 1, "ERR");
-                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 1, "ERR");
-                        ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, "ERR");
+                        ws.Cell(EXPERIMENT_LIB.br_merenja + 4, 2).Value = "ERR";
+                        ws.Cell(EXPERIMENT_LIB.br_merenja + 5, 2).Value = "ERR";
+                        ws.Cell(EXPERIMENT_LIB.br_merenja + 6, 2).Value = "ERR";
                     }
                 }
                 else
                 {
-                    ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 3, 1, "ERR");
-                    ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 4, 1, "ERR");
-                    ws.SetCellValue(EXPERIMENT_LIB.br_merenja + 5, 1, "ERR");
+                    ws.Cell(EXPERIMENT_LIB.br_merenja + 4, 2).Value = "ERR";
+                    ws.Cell(EXPERIMENT_LIB.br_merenja + 5, 2).Value = "ERR";
+                    ws.Cell(EXPERIMENT_LIB.br_merenja + 6, 2).Value = "ERR";
                 }
 
 
             }
             catch (Exception es)
-            { MessageBox.Show(es.ToString()); }
+            { PrintInfo.ShowMessage(es.ToString()); }
             finally
             {
                 wb.Save();
-                wb.Close();
                 PrintInfo.ShowMessage("Podaci su upisani!");
             }
+        }
+
+        private void fillfile_Click(object sender, EventArgs e)
+        {
+            FillData();
         }
 
         private void connectform_Click(object sender, EventArgs e)
@@ -580,24 +638,24 @@ namespace Vinca_Projekat
             try
             {
                 int n = Convert.ToInt32(textBox1.Text);
-                WorkBook wb = WorkBook.Load(pathtofile.Text);
-                WorkSheet ws = wb.GetWorkSheet(cbsheets.SelectedItem.ToString());
+                XLWorkbook wb = new XLWorkbook(pathtofile.Text);
+                var ws = wb.Worksheet(cbsheets.SelectedItem.ToString());
 
                 int cl = 3;
                 for (int i = 0; i < EXPERIMENT_LIB.br_merenja; i++)
                 {
-                    ws.SetCellValue(red + i + 1, 0, datagrid.Rows[i].Cells[0].Value);
-                    ws.SetCellValue(red + i + 1, 1, datagrid.Rows[i].Cells[1].Value);
-                    ws.SetCellValue(red + i + 1, 2, datagrid.Rows[i].Cells[2].Value);
+                    ws.Cell(red + i + 2, 0).Value = (XLCellValue)datagrid.Rows[i].Cells[0].Value;
+                    ws.Cell(red + i + 2, 1).Value = (XLCellValue)datagrid.Rows[i].Cells[1].Value;
+                    ws.Cell(red + i + 2, 2).Value = (XLCellValue)datagrid.Rows[i].Cells[2].Value;
                 }
                 for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
                 {
-                    ws.SetCellValue(red, cl, "R" + z.ToString());
+                    ws.Cell(red + 1, cl).Value = $"R{z}";
                     cl++;
                 }
                 for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
                 {
-                    ws.SetCellValue(red, cl, "T" + z.ToString());
+                    ws.Cell(red + 1, cl).Value = $"T{z}";
                     cl++;
                 }
 
@@ -609,7 +667,7 @@ namespace Vinca_Projekat
 
                     for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
                     {
-                        ws.SetCellValue(i + 1, col, dataR[z]);
+                        ws.Cell(i + 2, col).Value = dataR[z];
                         col++;
                     }
 
@@ -617,14 +675,12 @@ namespace Vinca_Projekat
 
                     for (int z = 0; z < EXPERIMENT_LIB.brt; z++)
                     {
-                        ws.SetCellValue(i + 1, col, dataT[z]);
+                        ws.Cell(i + 2, col).Value = dataT[z];
                         col++;
                     }
 
                 }
                 wb.Save();
-
-                wb.Close();
                 PrintInfo.ShowMessage("Podaci su upisani!");
             }
             catch (Exception es)
@@ -677,38 +733,10 @@ namespace Vinca_Projekat
             expt.Start();
         }
 
-        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            using (PrintInfo pf = new PrintInfo(IronXL.License.LicenseKey))
-            {
-                this.Visible = false;
-                pf.ShowDialog();
-                this.Visible = true;
-            }
-        }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            try
-            {
-                if (!File.Exists("./lic.txt"))
-                {
-                    PrintInfo.ShowMessage("Nemate lic.txt fajl.");
-                    return;
-
-                }
-
-                StreamReader sr = new StreamReader("./lic.txt");
-
-                IronXL.License.LicenseKey = sr.ReadLine();
-                Console.WriteLine(IronXL.License.LicenseKey);
-            }
-            catch (Exception er)
-            {
-
-
-            }
-            cbsamplerate.SelectedIndex = 0;
+            cbsamplerate.SelectedIndex = 3;
         }
 
         private void button2_Click_1(object sender, EventArgs e)
